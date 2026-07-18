@@ -3,196 +3,70 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>管理ページ | ポートフォリオ</title>
-  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin - Portfolio</title>
   <link rel="stylesheet" href="css/admin.css" />
 </head>
 <body>
 
-  <!-- ===== ログイン画面 ===== -->
+  <!-- ログイン画面 -->
   <div class="login-screen" id="login-screen">
     <div class="login-card">
-      <div class="login-icon">🔒</div>
-      <h1 class="login-title">管理ページ</h1>
-      <p class="login-subtitle">ポートフォリオの作品を管理します</p>
-
-      <div class="login-error" id="login-error">
-        パスワードが違います
-      </div>
-
+      <h1 style="color: var(--accent);">NEON ADMIN</h1>
+      <p style="color: var(--text-soft); margin-bottom: 24px;">サイトデータを管理します</p>
+      <div class="login-error" id="login-error">パスワードが違います</div>
       <form id="login-form">
-        <div class="form-group">
-          <input
-            type="password"
-            id="login-password"
-            class="form-input"
-            placeholder="パスワードを入力"
-            autocomplete="current-password"
-            required
-          />
-          <p class="form-hint">初期パスワード: admin</p>
-        </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
-          ログイン
-        </button>
+        <input type="password" id="login-password" class="form-input" placeholder="パスワード(admin)" required />
+        <button type="submit" class="btn btn-primary" style="width: 100%;">LOGIN</button>
       </form>
     </div>
   </div>
 
-  <!-- ===== ダッシュボード ===== -->
+  <!-- ダッシュボード -->
   <div class="dashboard" id="dashboard">
-
-    <!-- ヘッダー -->
     <header class="admin-header">
-      <div class="admin-header-left">
-        <span class="admin-logo">⚙ 管理ページ</span>
-        <span class="admin-badge">ADMIN</span>
-      </div>
-      <div class="admin-header-right">
-        <button class="btn" id="btn-preview">👁 プレビュー</button>
-        <button class="btn btn-danger" id="btn-logout">ログアウト</button>
+      <h2 style="margin:0; color: var(--accent);">DATA EDITOR</h2>
+      <div style="display: flex; gap: 8px;">
+        <button class="btn" id="btn-preview">👁 Preview</button>
+        <button class="btn btn-danger" id="btn-logout">Logout</button>
       </div>
     </header>
 
-    <!-- ツールバー -->
     <div class="toolbar">
-      <button class="btn btn-primary" id="btn-add-work">＋ 作品を追加</button>
-      <button class="btn btn-success" id="btn-export">📤 エクスポート</button>
-      <button class="btn" id="btn-import">📥 インポート</button>
-      <button class="btn" id="btn-export-js">📄 works.js 生成</button>
-      <button class="btn btn-danger" id="btn-reset">🔄 リセット</button>
+      <button class="btn btn-primary" id="btn-save">💾 保存</button>
+      <button class="btn" id="btn-export">📤 バックアップDL</button>
+      <button class="btn" id="btn-import">📥 データ読込</button>
+      <button class="btn" id="btn-export-js">📄 data.js生成 (GitHub用)</button>
+      <button class="btn btn-danger" id="btn-reset">🔄 初期化</button>
     </div>
 
-    <!-- 作品リスト -->
-    <div class="section-heading">
-      <h2>作品一覧</h2>
-      <span class="work-count" id="work-count">0 件</span>
-    </div>
-    <div class="works-list" id="works-list">
-      <!-- JavaScriptで動的に生成 -->
-    </div>
-
-    <!-- データ操作パネル -->
-    <div class="data-panel">
-      <h3>💡 使い方ヒント</h3>
-      <ul style="color: var(--text-soft); font-size: 0.88rem; padding-left: 20px; line-height: 2;">
-        <li>「＋ 作品を追加」から新しい作品を登録できます</li>
-        <li>カードの <strong>⠿</strong> をドラッグして表示順を変更できます</li>
-        <li>「📤 エクスポート」で現在のデータをJSONファイルとしてバックアップ</li>
-        <li>「📄 works.js 生成」でデプロイ用のコードを出力できます</li>
-        <li>データはこのブラウザの localStorage に保存されています</li>
-      </ul>
+    <div class="editor-container">
+      <p style="color: var(--text-soft); font-size: 14px; margin: 0;">
+        ポートフォリオの全データ（プロフィール、経歴、スキル、作品）をJSON形式で直接編集できます。編集後は「保存」を押してください。
+      </p>
+      <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
     </div>
   </div>
 
-  <!-- ===== 作品 編集モーダル ===== -->
-  <div class="modal-overlay" id="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modal-title">作品を追加</h3>
-        <button class="modal-close" id="modal-close">&times;</button>
-      </div>
-
-      <form id="work-form">
-        <div class="modal-body">
-          <!-- 作品名 -->
-          <div class="form-group">
-            <label class="form-label" for="f-title">作品名 *</label>
-            <input type="text" id="f-title" class="form-input" placeholder="例：紡シフト" required />
-          </div>
-
-          <!-- カテゴリ & 年 -->
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="f-category">カテゴリ</label>
-              <select id="f-category" class="form-select">
-                <option value="webapp">Web App</option>
-                <option value="game">ゲーム</option>
-                <option value="other">その他</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="f-year">制作年</label>
-              <input type="text" id="f-year" class="form-input" placeholder="例：2025" />
-            </div>
-          </div>
-
-          <!-- 説明 -->
-          <div class="form-group">
-            <label class="form-label" for="f-description">説明</label>
-            <textarea id="f-description" class="form-textarea" placeholder="どんな作品かを簡潔に説明..."></textarea>
-          </div>
-
-          <!-- 絵文字 & 色 -->
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label" for="f-emoji">絵文字アイコン</label>
-              <input type="text" id="f-emoji" class="form-input" placeholder="🗓️" />
-              <p class="form-hint">サムネイル画像がない場合に表示</p>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="f-accent">アクセントカラー</label>
-              <input type="color" id="f-accent" class="form-input" value="#4f46e5" style="height: 44px; padding: 4px;" />
-            </div>
-          </div>
-
-          <!-- 画像パス -->
-          <div class="form-group">
-            <label class="form-label" for="f-image">サムネイル画像パス</label>
-            <input type="text" id="f-image" class="form-input" placeholder="images/screenshot.png（任意）" />
-          </div>
-
-          <!-- タグ -->
-          <div class="form-group">
-            <label class="form-label">技術タグ</label>
-            <div class="tags-input-container" id="f-tags-container">
-              <input type="text" id="f-tags-input" placeholder="Enterで追加..." />
-            </div>
-            <p class="form-hint">Enter または , で追加、Backspace で削除</p>
-          </div>
-
-          <!-- リンク -->
-          <div class="form-group">
-            <label class="form-label">リンク</label>
-            <div class="link-entries" id="f-links">
-              <!-- 動的に追加 -->
-            </div>
-            <button type="button" class="btn btn-sm" id="btn-add-link" style="margin-top: 8px;">＋ リンクを追加</button>
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn" id="btn-cancel">キャンセル</button>
-          <button type="submit" class="btn btn-primary">💾 保存</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- ===== コード表示モーダル ===== -->
+  <!-- コード出力モーダル -->
   <div class="modal-overlay" id="code-modal">
-    <div class="modal" style="max-width: 700px;">
-      <div class="modal-header">
-        <h3 class="modal-title">works.js コード出力</h3>
-        <button class="modal-close" onclick="document.getElementById('code-modal').classList.remove('open')">&times;</button>
+    <div class="modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+        <h3 style="margin:0;">data.js コード出力</h3>
+        <button class="btn" onclick="window.closeModal('code-modal')" style="padding:4px 8px;">×</button>
       </div>
-      <div class="modal-body">
-        <p style="font-size: 0.88rem; color: var(--text-soft); margin-bottom: 14px;">
-          このコードを <code>js/works.js</code> にコピー＆ペーストすると、GitHub Pages などにデプロイできます。
-        </p>
-        <pre class="code-block" id="code-output"></pre>
-        <button class="btn btn-primary" style="margin-top: 14px;" onclick="navigator.clipboard.writeText(document.getElementById('code-output').textContent).then(() => { this.textContent = '✓ コピーしました！'; setTimeout(() => { this.textContent = '📋 クリップボードにコピー'; }, 2000); })">
-          📋 クリップボードにコピー
-        </button>
-      </div>
+      <p style="font-size: 14px; color: var(--text-soft);">
+        このコードをコピーして <code>js/data.js</code> の中身を上書きすると、GitHub Pagesなどへのデプロイ準備が完了します。
+      </p>
+      <pre class="code-block" id="code-output"></pre>
+      <button class="btn btn-primary" style="margin-top: 16px;" onclick="navigator.clipboard.writeText(document.getElementById('code-output').textContent).then(() => { this.textContent = 'Copied!'; setTimeout(() => { this.textContent = '📋 Copy'; }, 2000); })">
+        📋 Copy
+      </button>
     </div>
   </div>
 
-  <!-- トースト通知 -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Scripts -->
-  <script src="js/works.js"></script>
+  <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/admin.js"></script>
 </body>

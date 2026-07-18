@@ -1,54 +1,197 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>碇 隼匠 | Portfolio</title>
-  <meta name="description" content="碇 隼匠のポートフォリオ。Webアプリやゲームなど、これまで作った作品をまとめています。" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1kqr1 | Portfolio</title>
+  <meta name="description" content="1kqr1のポートフォリオサイト。Webアプリケーション作品やスキルを紹介しています。" />
+  <meta name="theme-color" content="#0a0a0f" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- ===== ヘッダー / 自己紹介 ===== -->
-  <header class="hero">
-    <div class="hero__inner">
-      <p class="hero__eyebrow">Portfolio</p>
-      <h1 class="hero__name">碇 隼匠</h1>
-      <p class="hero__affil">周南公立大学　情報科学部　情報科学科</p>
-      <p class="hero__lead">
-        Webアプリやゲームなど、自分で作ったものを置いていく場所です。<br />
-        気になる作品はカードから見にいけます。
-      </p>
+  <!-- パーティクル背景 -->
+  <canvas id="particle-canvas"></canvas>
 
-      <!-- 連絡先リンク：href の "#" を自分のURL・メールに差し替えてください -->
-      <nav class="hero__links" aria-label="連絡先">
-        <a class="btn" href="#" target="_blank" rel="noopener">GitHub</a>
-        <a class="btn" href="#">メール</a>
-      </nav>
+  <!-- ナビゲーション -->
+  <nav id="main-nav" class="navbar">
+    <div class="nav-container">
+      <a href="#home" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>
+        <span class="logo-text">1kqr1</span>
+        <span class="logo-bracket">/&gt;</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
+        <li><a href="#about" class="nav-link" data-page="about">About</a></li>
+        <li><a href="#projects" class="nav-link" data-page="projects">Projects</a></li>
+        <li><a href="#skills" class="nav-link" data-page="skills">Skills</a></li>
+        <li><a href="#experience" class="nav-link" data-page="experience">Experience</a></li>
+        <li><a href="#contact" class="nav-link" data-page="contact">Contact</a></li>
+        <li><a href="admin.html" class="nav-link" style="opacity:0.3; font-size:0.8rem;">⚙ Admin</a></li>
+      </ul>
+      <button class="nav-toggle" id="nav-toggle" aria-label="メニュー">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
-  </header>
+  </nav>
 
-  <main>
-    <!-- ===== 作品一覧 ===== -->
-    <section class="works" aria-labelledby="works-title">
-      <div class="works__head">
-        <h2 id="works-title" class="section-title">作品</h2>
-        <!-- カテゴリのボタンは js が自動生成します -->
-        <div class="filters" id="filters" role="group" aria-label="カテゴリで絞り込み"></div>
+  <!-- ページコンテナ -->
+  <main id="page-container">
+
+    <!-- ===== HOME ===== -->
+    <section id="page-home" class="page active">
+      <div class="hero">
+        <div class="hero-content">
+          <p class="hero-greeting">Hello, I'm</p>
+          <h1 class="hero-name">
+            <span class="neon-text">1kqr1</span>
+          </h1>
+          <div class="hero-tagline">
+            <span id="typing-text"></span>
+            <span class="typing-cursor">|</span>
+          </div>
+          <p class="hero-description">
+            Webアプリケーションを中心に、クリエイティブなデジタル体験を創り出しています。
+          </p>
+          <div class="hero-cta">
+            <a href="#projects" class="btn btn-primary">
+              <span>作品を見る</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="#contact" class="btn btn-outline">
+              <span>お問い合わせ</span>
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-orb"></div>
+          <div class="hero-orb hero-orb-2"></div>
+          <div class="hero-ring"></div>
+        </div>
       </div>
-
-      <!-- カードは js が works.js のデータから自動生成します -->
-      <div class="grid" id="grid"></div>
-      <p class="empty" id="empty" hidden>この種類の作品はまだありません。</p>
+      <!-- スクロールインジケーター -->
+      <div class="scroll-indicator">
+        <div class="scroll-line"></div>
+      </div>
     </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="page-about" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">About Me</span>
+          <h2 class="section-title">自己紹介</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="about-content reveal-on-scroll">
+          <div class="about-text">
+            <div class="about-bio" id="about-bio"></div>
+            <div class="about-details" id="about-details"></div>
+          </div>
+          <div class="about-socials" id="about-socials"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS ===== -->
+    <section id="page-projects" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">Projects</span>
+          <h2 class="section-title">作品一覧</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="projects-grid reveal-on-scroll" id="projects-grid">
+          <!-- data.jsから動的に生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SKILLS ===== -->
+    <section id="page-skills" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">Skills</span>
+          <h2 class="section-title">スキルセット</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="skills-grid reveal-on-scroll" id="skills-grid">
+          <!-- data.jsから動的に生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EXPERIENCE ===== -->
+    <section id="page-experience" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">Experience</span>
+          <h2 class="section-title">経歴</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="timeline reveal-on-scroll" id="timeline">
+          <!-- data.jsから動的に生成 -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="page-contact" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">Contact</span>
+          <h2 class="section-title">お問い合わせ</h2>
+          <div class="section-line"></div>
+        </div>
+        <div class="contact-content reveal-on-scroll">
+          <p class="contact-description">
+            お気軽にメッセージをお送りください。お仕事のご依頼やご質問など、何でもお待ちしています。
+          </p>
+          <form class="contact-form" id="contact-form">
+            <div class="form-group">
+              <label for="contact-name" class="form-label">お名前</label>
+              <input type="text" id="contact-name" class="form-input" placeholder="Your Name" required />
+            </div>
+            <div class="form-group">
+              <label for="contact-email" class="form-label">メールアドレス</label>
+              <input type="email" id="contact-email" class="form-input" placeholder="your@email.com" required />
+            </div>
+            <div class="form-group">
+              <label for="contact-message" class="form-label">メッセージ</label>
+              <textarea id="contact-message" class="form-input form-textarea" placeholder="Your message..." rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-submit" id="contact-submit">
+              <span>送信する</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
   </main>
 
+  <!-- フッター -->
   <footer class="footer">
-    <p>© <span id="year"></span> 碇 隼匠</p>
-    <a href="admin.html" class="admin-link" title="管理ページ">⚙ 管理</a>
+    <div class="footer-content">
+      <p class="footer-text">&copy; 2026 <span class="neon-text">1kqr1</span>. All rights reserved.</p>
+    </div>
   </footer>
 
-  <script src="js/works.js"></script>
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
   <script src="js/storage.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
