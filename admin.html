@@ -24,7 +24,7 @@
   <!-- ダッシュボード -->
   <div class="dashboard" id="dashboard">
     <header class="admin-header">
-      <h2 style="margin:0; color: var(--accent);">DATA EDITOR</h2>
+      <h2 style="margin:0; color: var(--accent);">GUI DATA EDITOR</h2>
       <div style="display: flex; gap: 8px;">
         <button class="btn" id="btn-preview">👁 Preview</button>
         <button class="btn btn-danger" id="btn-logout">Logout</button>
@@ -32,35 +32,179 @@
     </header>
 
     <div class="toolbar">
-      <button class="btn btn-primary" id="btn-save">💾 保存</button>
       <button class="btn" id="btn-export">📤 バックアップDL</button>
       <button class="btn" id="btn-import">📥 データ読込</button>
       <button class="btn" id="btn-export-js">📄 data.js生成 (GitHub用)</button>
       <button class="btn btn-danger" id="btn-reset">🔄 初期化</button>
     </div>
 
-    <div class="editor-container">
-      <p style="color: var(--text-soft); font-size: 14px; margin: 0;">
-        ポートフォリオの全データ（プロフィール、経歴、スキル、作品）をJSON形式で直接編集できます。編集後は「保存」を押してください。
-      </p>
-      <textarea id="json-editor" class="json-editor" spellcheck="false"></textarea>
+    <!-- タブナビゲーション -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="tab-profile">プロフィール</button>
+      <button class="tab-btn" data-tab="tab-projects">作品 (Projects)</button>
+      <button class="tab-btn" data-tab="tab-experience">経歴 (Experience)</button>
+      <button class="tab-btn" data-tab="tab-skills">スキル (Skills)</button>
+    </div>
+
+    <!-- タブコンテンツ: プロフィール -->
+    <div class="tab-content active" id="tab-profile">
+      <form id="form-profile">
+        <div class="form-group">
+          <label class="form-label">名前</label>
+          <input type="text" id="prof-name" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">肩書き (Tagline)</label>
+          <input type="text" id="prof-tagline" class="form-input" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label">自己紹介 (Bio)</label>
+          <textarea id="prof-bio" class="form-textarea" required></textarea>
+        </div>
+        <div style="display:flex; gap:16px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">場所 (Location)</label>
+            <input type="text" id="prof-location" class="form-input" />
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">Email</label>
+            <input type="email" id="prof-email" class="form-input" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">💾 プロフィールを保存</button>
+      </form>
+    </div>
+
+    <!-- タブコンテンツ: 作品 -->
+    <div class="tab-content" id="tab-projects">
+      <div style="margin-bottom: 16px;">
+        <button class="btn btn-primary" onclick="AdminApp.openProjectModal()">＋ 作品を追加</button>
+      </div>
+      <div class="item-list" id="list-projects">
+        <!-- JSで描画 -->
+      </div>
+    </div>
+
+    <!-- タブコンテンツ: 経歴 -->
+    <div class="tab-content" id="tab-experience">
+      <div style="margin-bottom: 16px;">
+        <button class="btn btn-primary" onclick="AdminApp.openExperienceModal()">＋ 経歴を追加</button>
+      </div>
+      <div class="item-list" id="list-experience">
+        <!-- JSで描画 -->
+      </div>
+    </div>
+
+    <!-- タブコンテンツ: スキル -->
+    <div class="tab-content" id="tab-skills">
+      <p style="color:var(--text-soft); font-size:14px;">※スキルの追加・編集機能は現在シンプル版です（コード編集モーダル）</p>
+      <div class="form-group">
+        <textarea id="skills-json" class="form-textarea" style="height: 300px; font-family: monospace;"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="AdminApp.saveSkills()">💾 スキル情報を保存</button>
+    </div>
+  </div>
+
+  <!-- 作品モーダル -->
+  <div class="modal-overlay" id="modal-project">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="project-modal-title">作品の追加</h3>
+        <button class="btn btn-icon" onclick="AdminApp.closeModal('modal-project')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-project">
+          <input type="hidden" id="proj-index" value="-1" />
+          <div class="form-group">
+            <label class="form-label">ID (半角英数)</label>
+            <input type="text" id="proj-id" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" id="proj-title" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">説明</label>
+            <textarea id="proj-description" class="form-textarea" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">タグ (カンマ区切り)</label>
+            <input type="text" id="proj-tags" class="form-input" placeholder="例: React, Node.js, Design" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">公開URL</label>
+            <input type="text" id="proj-live" class="form-input" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">GitHub URL</label>
+            <input type="text" id="proj-github" class="form-input" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="AdminApp.closeModal('modal-project')">キャンセル</button>
+        <button class="btn btn-primary" onclick="AdminApp.saveProject()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 経歴モーダル -->
+  <div class="modal-overlay" id="modal-experience">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="exp-modal-title">経歴の追加</h3>
+        <button class="btn btn-icon" onclick="AdminApp.closeModal('modal-experience')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-experience">
+          <input type="hidden" id="exp-index" value="-1" />
+          <div class="form-group">
+            <label class="form-label">年</label>
+            <input type="text" id="exp-year" class="form-input" required placeholder="例: 2026" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" id="exp-title" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">説明</label>
+            <textarea id="exp-description" class="form-textarea" required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">タイプ</label>
+            <select id="exp-type" class="form-select">
+              <option value="education">Education (学歴)</option>
+              <option value="work">Work (職歴)</option>
+              <option value="project">Project (プロジェクト)</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="AdminApp.closeModal('modal-experience')">キャンセル</button>
+        <button class="btn btn-primary" onclick="AdminApp.saveExperience()">保存</button>
+      </div>
     </div>
   </div>
 
   <!-- コード出力モーダル -->
   <div class="modal-overlay" id="code-modal">
     <div class="modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-        <h3 style="margin:0;">data.js コード出力</h3>
-        <button class="btn" onclick="window.closeModal('code-modal')" style="padding:4px 8px;">×</button>
+      <div class="modal-header">
+        <h3 class="modal-title">data.js コード出力</h3>
+        <button class="btn btn-icon" onclick="AdminApp.closeModal('code-modal')">×</button>
       </div>
-      <p style="font-size: 14px; color: var(--text-soft);">
-        このコードをコピーして <code>js/data.js</code> の中身を上書きすると、GitHub Pagesなどへのデプロイ準備が完了します。
-      </p>
-      <pre class="code-block" id="code-output"></pre>
-      <button class="btn btn-primary" style="margin-top: 16px;" onclick="navigator.clipboard.writeText(document.getElementById('code-output').textContent).then(() => { this.textContent = 'Copied!'; setTimeout(() => { this.textContent = '📋 Copy'; }, 2000); })">
-        📋 Copy
-      </button>
+      <div class="modal-body">
+        <p style="font-size: 14px; color: var(--text-soft);">
+          このコードをコピーして <code>js/data.js</code> の中身を上書きしてください。
+        </p>
+        <pre class="code-block" id="code-output"></pre>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('code-output').textContent).then(() => { this.textContent = 'Copied!'; setTimeout(() => { this.textContent = '📋 Copy'; }, 2000); })">
+          📋 Copy
+        </button>
+      </div>
     </div>
   </div>
 
