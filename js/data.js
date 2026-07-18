@@ -33,6 +33,15 @@ const DATA = {
   // 新しいプロジェクトを追加するには、このリストにオブジェクトを追加するだけ！
   projects: [
     {
+      id: "project-dcc",
+      title: "DCC コミュニティHP",
+      description: "DCCというコミュニティの公式ホームページを作成しました。",
+      tags: ["Webサイト", "コミュニティ"],
+      liveUrl: "https://shu-dcc.net/",
+      githubUrl: "",
+      image: null,
+    },
+    {
       id: "project-1",
       title: "プロジェクト名 1",
       description:
