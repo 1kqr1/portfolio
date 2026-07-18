@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>碇 隼匠 | Portfolio</title>
+  <meta name="description" content="碇 隼匠のポートフォリオ。Webアプリやゲームなど、これまで作った作品をまとめています。" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== ヘッダー / 自己紹介 ===== -->
+  <header class="hero">
+    <div class="hero__inner">
+      <p class="hero__eyebrow">Portfolio</p>
+      <h1 class="hero__name">碇 隼匠</h1>
+      <p class="hero__affil">周南公立大学　情報科学部　情報科学科</p>
+      <p class="hero__lead">
+        Webアプリやゲームなど、自分で作ったものを置いていく場所です。<br />
+        気になる作品はカードから見にいけます。
+      </p>
+
+      <!-- 連絡先リンク：href の "#" を自分のURL・メールに差し替えてください -->
+      <nav class="hero__links" aria-label="連絡先">
+        <a class="btn" href="#" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="#">メール</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ===== 作品一覧 ===== -->
+    <section class="works" aria-labelledby="works-title">
+      <div class="works__head">
+        <h2 id="works-title" class="section-title">作品</h2>
+        <!-- カテゴリのボタンは js が自動生成します -->
+        <div class="filters" id="filters" role="group" aria-label="カテゴリで絞り込み"></div>
+      </div>
+
+      <!-- カードは js が works.js のデータから自動生成します -->
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>この種類の作品はまだありません。</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span id="year"></span> 碇 隼匠</p>
+    <a href="admin.html" class="admin-link" title="管理ページ">⚙ 管理</a>
+  </footer>
+
+  <script src="js/works.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
