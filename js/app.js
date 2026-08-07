@@ -8,33 +8,55 @@ class PortfolioApp {
     this.animations = new AnimationManager();
     this.particles = null;
     this.isTransitioning = false;
-    this.data = typeof PortfolioStorage !== "undefined" ? PortfolioStorage.loadData() : DATA;
+
+    // 公開サイトは常に data.js を正とする。
+    // 管理画面(admin.html)の「プレビュー」だけ ?preview=local でローカル下書きを表示。
+    const useLocalDraft =
+      new URLSearchParams(location.search).get("preview") === "local";
+    this.data =
+      useLocalDraft && typeof PortfolioStorage !== "undefined"
+        ? PortfolioStorage.loadData()
+        : typeof DATA !== "undefined"
+        ? DATA
+        : {};
 
     this.init();
   }
 
   init() {
+    // 「視差効果を減らす」設定のユーザーには過剰なモーションを出さない
+    this.reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     // DOM準備完了後に実行
     this.setupNavigation();
     this.setupMobileMenu();
     this.setupScrollEffects();
     this.renderAllContent();
-    this.setupContactForm();
 
-    // パーティクル背景
-    this.particles = new ParticleSystem("particle-canvas");
+    // パーティクル背景（モーション控えめ設定のときは動かさない）
+    if (!this.reduceMotion) {
+      this.particles = new ParticleSystem("particle-canvas");
+    }
 
     // 初期ページを設定（ハッシュから）
     const initialPage = window.location.hash.replace("#", "") || "home";
     this.navigateTo(initialPage, false);
 
-    // タイピングアニメーション開始
-    this.animations.startTyping("typing-text", [
+    // タイピングアニメーション（控えめ設定なら固定表示）
+    const phrases = [
       "Creating Digital Experiences",
       "Web Developer",
       "Building the Future",
       "Problem Solver",
-    ]);
+    ];
+    if (this.reduceMotion) {
+      const el = document.getElementById("typing-text");
+      if (el) el.textContent = phrases[0];
+    } else {
+      this.animations.startTyping("typing-text", phrases);
+    }
   }
 
   // ----- ナビゲーション -----
@@ -102,14 +124,7 @@ class PortfolioApp {
     // スクロールリビールを再初期化
     setTimeout(() => {
       this.animations.initScrollReveal();
-      this.animations.initTiltEffect();
-
-      // スキルページではプログレスバーアニメーション
-      if (page === "skills") {
-        setTimeout(() => {
-          this.animations.animateProgressBars();
-        }, 400);
-      }
+      if (!this.reduceMotion) this.animations.initTiltEffect();
     }, 100);
   }
 
@@ -175,24 +190,35 @@ class PortfolioApp {
     if (detailsEl) {
       detailsEl.innerHTML = `
         <div class="about-detail-item stagger-item">
+          <div class="about-detail-icon">👤</div>
+          <div>
+            <div class="about-detail-label">Name</div>
+            <div class="about-detail-value">${
+              this.data.profile.realName || this.data.profile.name
+            }</div>
+          </div>
+        </div>
+        <div class="about-detail-item stagger-item">
+          <div class="about-detail-icon">🎓</div>
+          <div>
+            <div class="about-detail-label">University</div>
+            <div class="about-detail-value">${this.data.profile.affiliation || ""}</div>
+          </div>
+        </div>
+        <div class="about-detail-item stagger-item">
           <div class="about-detail-icon">📍</div>
           <div>
             <div class="about-detail-label">Location</div>
             <div class="about-detail-value">${this.data.profile.location}</div>
           </div>
         </div>
-        <div class="about-detail-item stagger-item">
-          <div class="about-detail-icon">✉️</div>
-          <div>
-            <div class="about-detail-label">Email</div>
-            <div class="about-detail-value">${this.data.profile.email}</div>
-          </div>
-        </div>
       `;
     }
 
     if (socialsEl) {
-      socialsEl.innerHTML = this.data.socials
+      const activeSocials = (this.data.socials || []).filter((s) => s.url);
+      socialsEl.style.display = activeSocials.length ? "" : "none";
+      socialsEl.innerHTML = activeSocials
         .map(
           (social) => `
         <a href="${social.url}" target="_blank" rel="noopener noreferrer" class="social-link stagger-item">
@@ -210,14 +236,33 @@ class PortfolioApp {
     if (!grid) return;
 
     grid.innerHTML = this.data.projects
-      .map(
-        (project) => `
+      .map((project) => {
+        // サムネイル：手動画像(image)が最優先。無ければ liveUrl から自動プレビュー生成。
+        // ログインが要るサイト(紡シフト等)は data.js で preview:false にして自動生成を止める。
+        const manual = project.image || "";
+        const auto =
+          project.liveUrl && project.preview !== false
+            ? `https://image.thum.io/get/width/1024/crop/640/${project.liveUrl}`
+            : "";
+        const src = manual || auto;
+        const isContain = project.imageFit === "contain";
+        const fitClass = isContain ? " project-thumb--contain" : "";
+        const imageBoxClass = isContain
+          ? " project-image--framed"
+          : "";
+        // 手動画像が読めなければ自動プレビューへ、それも無ければ💻プレースホルダ
+        const onErr =
+          manual && auto
+            ? `if(this.src.indexOf('thum.io')<0){this.src='${auto}'}else{this.remove()}`
+            : "this.remove()";
+        return `
       <div class="project-card tilt-card stagger-item" id="${project.id}">
-        <div class="project-image">
+        <div class="project-image${imageBoxClass}">
+          <div class="project-image-placeholder">💻</div>
           ${
-            project.image
-              ? `<img src="${project.image}" alt="${project.title}" loading="lazy" />`
-              : `<div class="project-image-placeholder">💻</div>`
+            src
+              ? `<img class="project-thumb${fitClass}" src="${src}" alt="${project.title} のプレビュー" loading="lazy" onerror="${onErr}" />`
+              : ""
           }
           <div class="project-image-overlay"></div>
         </div>
@@ -247,8 +292,8 @@ class PortfolioApp {
           </div>
         </div>
       </div>
-    `
-      )
+    `;
+      })
       .join("");
   }
 
@@ -264,21 +309,14 @@ class PortfolioApp {
           <div class="skill-category-icon">${category.icon}</div>
           <h3 class="skill-category-name">${category.category}</h3>
         </div>
-        ${category.items
-          .map(
-            (item) => `
-          <div class="skill-item">
-            <div class="skill-info">
-              <span class="skill-name">${item.name}</span>
-              <span class="skill-level">${item.level}%</span>
-            </div>
-            <div class="skill-progress">
-              <div class="skill-progress-fill" data-level="${item.level}"></div>
-            </div>
-          </div>
-        `
-          )
-          .join("")}
+        <div class="skill-chips">
+          ${category.items
+            .map((item) => {
+              const label = typeof item === "string" ? item : item.name;
+              return `<span class="skill-chip">${label}</span>`;
+            })
+            .join("")}
+        </div>
       </div>
     `
       )
@@ -289,8 +327,10 @@ class PortfolioApp {
     const timeline = document.getElementById("timeline");
     if (!timeline) return;
 
-    // 年を逆順（新しい方から）にソート
-    const sorted = [...this.data.experience].reverse();
+    // 年で新しい順（降順）にソート。元データの並びに依存しない
+    const sorted = [...this.data.experience].sort(
+      (a, b) => parseInt(b.year) - parseInt(a.year)
+    );
 
     timeline.innerHTML = sorted
       .map(
@@ -318,41 +358,6 @@ class PortfolioApp {
     return labels[type] || type;
   }
 
-  // ----- お問い合わせフォーム -----
-  setupContactForm() {
-    const form = document.getElementById("contact-form");
-    if (!form) return;
-
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const name = document.getElementById("contact-name").value;
-      const email = document.getElementById("contact-email").value;
-      const message = document.getElementById("contact-message").value;
-
-      // ここでは送信のデモとしてメッセージを表示
-      // 実際のバックエンド連携は後で設定可能
-      const formContent = form.parentElement;
-      const successMessage = document.createElement("div");
-      successMessage.className = "form-success";
-      successMessage.innerHTML = `
-        <p>✨ メッセージを受け取りました！</p>
-        <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.8;">
-          ${name}さん、お問い合わせありがとうございます。
-        </p>
-      `;
-
-      form.style.display = "none";
-      formContent.appendChild(successMessage);
-
-      // 5秒後にフォームをリセット
-      setTimeout(() => {
-        form.reset();
-        form.style.display = "flex";
-        successMessage.remove();
-      }, 5000);
-    });
-  }
 }
 
 // ----- 起動 -----

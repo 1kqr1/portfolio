@@ -24,6 +24,15 @@ class ParticleSystem {
       this.mouse.x = null;
       this.mouse.y = null;
     });
+
+    // タブが非表示のあいだは描画を止める（バッテリー・CPU節約）
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        this.destroy();
+      } else if (!this.animationId) {
+        this.animate();
+      }
+    });
   }
 
   resize() {
@@ -80,6 +89,7 @@ class ParticleSystem {
   destroy() {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
+      this.animationId = null;
     }
   }
 }

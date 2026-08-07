@@ -29,7 +29,7 @@
     document.getElementById("btn-import").addEventListener("click", handleImport);
     document.getElementById("btn-reset").addEventListener("click", handleReset);
     document.getElementById("btn-export-js").addEventListener("click", handleExportJS);
-    document.getElementById("btn-preview").addEventListener("click", () => window.open("index.html", "_blank"));
+    document.getElementById("btn-preview").addEventListener("click", () => window.open("index.html?preview=local", "_blank"));
     
     // タブ切り替え
     document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -83,18 +83,20 @@
   // ===== プロフィール =====
   function renderProfile() {
     document.getElementById("prof-name").value = appData.profile.name || "";
+    document.getElementById("prof-realname").value = appData.profile.realName || "";
     document.getElementById("prof-tagline").value = appData.profile.tagline || "";
+    document.getElementById("prof-affiliation").value = appData.profile.affiliation || "";
     document.getElementById("prof-bio").value = appData.profile.bio || "";
     document.getElementById("prof-location").value = appData.profile.location || "";
-    document.getElementById("prof-email").value = appData.profile.email || "";
   }
 
   function saveProfile() {
     appData.profile.name = document.getElementById("prof-name").value;
+    appData.profile.realName = document.getElementById("prof-realname").value;
     appData.profile.tagline = document.getElementById("prof-tagline").value;
+    appData.profile.affiliation = document.getElementById("prof-affiliation").value;
     appData.profile.bio = document.getElementById("prof-bio").value;
     appData.profile.location = document.getElementById("prof-location").value;
-    appData.profile.email = document.getElementById("prof-email").value;
     saveData();
     showToast("プロフィールを保存しました", "success");
   }
@@ -103,6 +105,10 @@
   function renderProjects() {
     const list = document.getElementById("list-projects");
     list.innerHTML = "";
+    if (!appData.projects.length) {
+      list.innerHTML = `<div class="empty-state">まだ作品がありません。「＋ 作品を追加」から登録してください。</div>`;
+      return;
+    }
     appData.projects.forEach((proj, index) => {
       list.innerHTML += `
         <div class="list-item">
@@ -137,12 +143,16 @@
       document.getElementById("proj-tags").value = (proj.tags || []).join(", ");
       document.getElementById("proj-live").value = proj.liveUrl || "";
       document.getElementById("proj-github").value = proj.githubUrl || "";
+      document.getElementById("proj-image").value = proj.image || "";
+      document.getElementById("proj-fit-contain").checked = proj.imageFit === "contain";
+      document.getElementById("proj-no-autopreview").checked = proj.preview === false;
     }
     modal.classList.add("open");
   }
 
   function saveProject() {
     const index = parseInt(document.getElementById("proj-index").value);
+    const imagePath = document.getElementById("proj-image").value.trim();
     const proj = {
       id: document.getElementById("proj-id").value,
       title: document.getElementById("proj-title").value,
@@ -150,7 +160,9 @@
       tags: document.getElementById("proj-tags").value.split(",").map(t => t.trim()).filter(t => t),
       liveUrl: document.getElementById("proj-live").value,
       githubUrl: document.getElementById("proj-github").value,
-      image: index !== -1 ? appData.projects[index].image : null
+      image: imagePath || null,
+      imageFit: document.getElementById("proj-fit-contain").checked ? "contain" : undefined,
+      preview: document.getElementById("proj-no-autopreview").checked ? false : undefined,
     };
 
     if (index === -1) {
@@ -177,6 +189,10 @@
   function renderExperience() {
     const list = document.getElementById("list-experience");
     list.innerHTML = "";
+    if (!appData.experience.length) {
+      list.innerHTML = `<div class="empty-state">まだ経歴がありません。「＋ 経歴を追加」から登録してください。</div>`;
+      return;
+    }
     appData.experience.forEach((exp, index) => {
       list.innerHTML += `
         <div class="list-item">

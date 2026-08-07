@@ -85,6 +85,10 @@ class AnimationManager {
   // ----- カードチルトエフェクト -----
   initTiltEffect() {
     document.querySelectorAll(".tilt-card").forEach((card) => {
+      // ページ遷移のたびに二重登録しないようにする
+      if (card.dataset.tiltBound) return;
+      card.dataset.tiltBound = "1";
+
       card.addEventListener("mousemove", (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;

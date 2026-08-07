@@ -84,6 +84,18 @@ a:hover {
   color: #fff;
 }
 
+/* キーボード操作時のフォーカスリング（マウス操作時には出さない） */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+.nav-toggle:focus-visible,
+.tilt-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -706,7 +718,7 @@ a:hover {
 
 .project-image {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16 / 10;
   background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-card) 100%);
   display: flex;
   align-items: center;
@@ -721,6 +733,31 @@ a:hover {
   object-fit: cover;
 }
 
+/* サムネイル画像（手動画像 or URL自動プレビュー）はプレースホルダの上に重ねる */
+.project-thumb {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* 縦長スクショなど：切り抜かず収め、額装風パネルで見せる */
+.project-image--framed {
+  aspect-ratio: 16 / 11;
+  background: radial-gradient(circle at 50% 0%, #1c2333 0%, #10131c 70%);
+  padding: 1.25rem 1.25rem 0;
+}
+
+.project-image img.project-thumb--contain {
+  position: static;
+  object-fit: contain;
+  object-position: bottom center;
+  width: auto;
+  max-width: calc(100% - 2.5rem);
+  height: calc(100% - 0.5rem);
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.5));
+  border-radius: 10px 10px 0 0;
+}
+
 .project-image-placeholder {
   font-size: 3rem;
   opacity: 0.2;
@@ -730,6 +767,11 @@ a:hover {
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, transparent 50%, rgba(6, 6, 11, 0.8) 100%);
+}
+
+/* 額装パネルは画像自体に影が付くのでオーバーレイは不要 */
+.project-image--framed .project-image-overlay {
+  display: none;
 }
 
 .project-body {
@@ -840,6 +882,30 @@ a:hover {
   font-weight: 600;
 }
 
+/* スキルチップ（習熟度％の代わり） */
+.skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skill-chip {
+  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid rgba(var(--accent-rgb), 0.15);
+  border-radius: var(--radius-full);
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.skill-chip:hover {
+  background: rgba(var(--accent-rgb), 0.16);
+  border-color: rgba(var(--accent-rgb), 0.4);
+  transform: translateY(-1px);
+}
+
 .skill-item {
   margin-bottom: 1.25rem;
 }
@@ -932,6 +998,30 @@ a:hover {
   border: 2px solid rgba(var(--accent-rgb), 0.2);
 }
 
+/* 最新の経歴（先頭）は脈打つリングで強調 */
+.timeline-item:first-child .timeline-dot::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: timeline-pulse 2s ease-out infinite;
+}
+
+@keyframes timeline-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
 .timeline-year {
   font-family: var(--font-heading);
   font-size: 0.8rem;
@@ -1008,6 +1098,11 @@ a:hover {
   color: var(--text-secondary);
   margin-bottom: 2.5rem;
   line-height: 1.8;
+}
+
+.contact-cta {
+  display: flex;
+  justify-content: center;
 }
 
 .contact-form {
@@ -1218,5 +1313,29 @@ a:hover {
     width: 100%;
     justify-content: center;
     max-width: 280px;
+  }
+}
+
+/* ----- モーション控えめ設定への配慮 ----- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* スクロール連動で非表示のままにならないよう常に表示 */
+  .reveal-on-scroll,
+  .stagger-item,
+  .hero-greeting,
+  .hero-name,
+  .hero-tagline,
+  .hero-description,
+  .hero-cta {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

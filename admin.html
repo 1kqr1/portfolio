@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin - Portfolio</title>
+
+  <!-- Google Fonts（公開サイトと統一） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="css/admin.css" />
 </head>
 <body>
@@ -11,20 +17,26 @@
   <!-- ログイン画面 -->
   <div class="login-screen" id="login-screen">
     <div class="login-card">
-      <h1 style="color: var(--accent);">NEON ADMIN</h1>
-      <p style="color: var(--text-soft); margin-bottom: 24px;">サイトデータを管理します</p>
+      <div class="login-logo">
+        <span class="logo-bracket">&lt;</span><span class="logo-text">1kqr1</span><span class="logo-bracket">/&gt;</span>
+      </div>
+      <p class="login-sub">管理画面にログインしてサイトデータを編集します</p>
       <div class="login-error" id="login-error">パスワードが違います</div>
       <form id="login-form">
-        <input type="password" id="login-password" class="form-input" placeholder="パスワード(admin)" required />
-        <button type="submit" class="btn btn-primary" style="width: 100%;">LOGIN</button>
+        <input type="password" id="login-password" class="form-input" placeholder="パスワード" required autocomplete="current-password" />
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">ログイン</button>
       </form>
+      <a href="index.html" class="login-back">← サイトに戻る</a>
     </div>
   </div>
 
   <!-- ダッシュボード -->
   <div class="dashboard" id="dashboard">
     <header class="admin-header">
-      <h2 style="margin:0; color: var(--accent);">GUI DATA EDITOR</h2>
+      <div class="admin-brand">
+        <span class="logo-bracket">&lt;</span><span class="logo-text">1kqr1</span><span class="logo-bracket">/&gt;</span>
+        <span class="admin-brand-sub">Data Editor</span>
+      </div>
       <div style="display: flex; gap: 8px;">
         <button class="btn" id="btn-preview">👁 Preview</button>
         <button class="btn btn-danger" id="btn-logout">Logout</button>
@@ -49,27 +61,31 @@
     <!-- タブコンテンツ: プロフィール -->
     <div class="tab-content active" id="tab-profile">
       <form id="form-profile">
-        <div class="form-group">
-          <label class="form-label">名前</label>
-          <input type="text" id="prof-name" class="form-input" required />
+        <div style="display:flex; gap:16px;">
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">表示名 (ハンドル)</label>
+            <input type="text" id="prof-name" class="form-input" required />
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label class="form-label">本名</label>
+            <input type="text" id="prof-realname" class="form-input" />
+          </div>
         </div>
         <div class="form-group">
           <label class="form-label">肩書き (Tagline)</label>
           <input type="text" id="prof-tagline" class="form-input" required />
         </div>
         <div class="form-group">
+          <label class="form-label">所属 (大学・学部など)</label>
+          <input type="text" id="prof-affiliation" class="form-input" />
+        </div>
+        <div class="form-group">
           <label class="form-label">自己紹介 (Bio)</label>
           <textarea id="prof-bio" class="form-textarea" required></textarea>
         </div>
-        <div style="display:flex; gap:16px;">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">場所 (Location)</label>
-            <input type="text" id="prof-location" class="form-input" />
-          </div>
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">Email</label>
-            <input type="email" id="prof-email" class="form-input" />
-          </div>
+        <div class="form-group">
+          <label class="form-label">場所 (Location)</label>
+          <input type="text" id="prof-location" class="form-input" />
         </div>
         <button type="submit" class="btn btn-primary">💾 プロフィールを保存</button>
       </form>
@@ -133,11 +149,26 @@
           </div>
           <div class="form-group">
             <label class="form-label">公開URL</label>
-            <input type="text" id="proj-live" class="form-input" />
+            <input type="text" id="proj-live" class="form-input" placeholder="https://..." />
           </div>
           <div class="form-group">
             <label class="form-label">GitHub URL</label>
-            <input type="text" id="proj-github" class="form-input" />
+            <input type="text" id="proj-github" class="form-input" placeholder="https://github.com/..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">サムネイル画像パス（任意）</label>
+            <input type="text" id="proj-image" class="form-input" placeholder="images/example.png" />
+            <p class="form-hint">空欄なら公開URLから自動でプレビュー画像を生成します。画像は事前に images/ フォルダに置いてください。</p>
+          </div>
+          <div class="form-group proj-image-options">
+            <label class="form-check">
+              <input type="checkbox" id="proj-fit-contain" />
+              <span>縦長スクショなど、画像全体を収めて表示する</span>
+            </label>
+            <label class="form-check">
+              <input type="checkbox" id="proj-no-autopreview" />
+              <span>公開URLからの自動プレビューを無効にする（ログインが必要なサイトなど）</span>
+            </label>
           </div>
         </form>
       </div>

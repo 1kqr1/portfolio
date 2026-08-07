@@ -5,7 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1kqr1 | Portfolio</title>
   <meta name="description" content="1kqr1のポートフォリオサイト。Webアプリケーション作品やスキルを紹介しています。" />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#06060b" />
+
+  <!-- ファビコン（ブラウザのタブに出る小さいアイコン） -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2306060b'/><text x='16' y='23' font-family='monospace' font-size='17' font-weight='bold' text-anchor='middle' fill='%2300ffaa'>1k</text></svg>" />
+
+  <!-- OGP（SNS・チャットにURLを貼ったときのプレビューカード） -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="1kqr1 | Portfolio" />
+  <meta property="og:description" content="1kqr1のポートフォリオ。Webアプリ作品やスキルを紹介しています。" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- 公開URLが決まったら、下の2行のコメントを外して差し替えてください
+  <meta property="og:url" content="https://<あなたの公開URL>/" />
+  <meta property="og:image" content="https://<あなたの公開URL>/ogp.png" />
+  -->
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,7 +47,6 @@
         <li><a href="#skills" class="nav-link" data-page="skills">Skills</a></li>
         <li><a href="#experience" class="nav-link" data-page="experience">Experience</a></li>
         <li><a href="#contact" class="nav-link" data-page="contact">Contact</a></li>
-        <li><a href="admin.html" class="nav-link" style="opacity:0.3; font-size:0.8rem;">⚙ Admin</a></li>
       </ul>
       <button class="nav-toggle" id="nav-toggle" aria-label="メニュー">
         <span></span>
@@ -154,26 +166,16 @@
         </div>
         <div class="contact-content reveal-on-scroll">
           <p class="contact-description">
-            お気軽にメッセージをお送りください。お仕事のご依頼やご質問など、何でもお待ちしています。
+            お気軽にお問い合わせください。お仕事のご依頼やご質問など、下のボタンからGoogleフォームでお送りいただけます。
           </p>
-          <form class="contact-form" id="contact-form">
-            <div class="form-group">
-              <label for="contact-name" class="form-label">お名前</label>
-              <input type="text" id="contact-name" class="form-input" placeholder="Your Name" required />
-            </div>
-            <div class="form-group">
-              <label for="contact-email" class="form-label">メールアドレス</label>
-              <input type="email" id="contact-email" class="form-input" placeholder="your@email.com" required />
-            </div>
-            <div class="form-group">
-              <label for="contact-message" class="form-label">メッセージ</label>
-              <textarea id="contact-message" class="form-input form-textarea" placeholder="Your message..." rows="5" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary btn-submit" id="contact-submit">
-              <span>送信する</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-            </button>
-          </form>
+          <!-- お問い合わせフォーム（Googleフォーム）。差し替える場合は下の href を変更 -->
+          <div class="contact-cta">
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4tJ9c9D34yZ21-DZ8sFwO8BEBgdxSE9GKG5qRQChM3Rgh-g/viewform"
+               target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              <span>お問い合わせフォームを開く</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            </a>
+          </div>
         </div>
       </div>
     </section>
