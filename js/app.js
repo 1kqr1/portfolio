@@ -269,7 +269,7 @@ class PortfolioApp {
           <div class="project-image-placeholder">💻</div>
           ${
             src
-              ? `<img class="project-thumb${fitClass}" src="${src}" alt="${project.title} のプレビュー" loading="lazy" onerror="${onErr}" />`
+              ? `<img class="project-thumb fade-in-image${fitClass}" src="${src}" alt="${project.title} のプレビュー" loading="lazy" onload="this.classList.add('loaded')" onerror="${onErr}" />`
               : ""
           }
           <div class="project-image-overlay"></div>

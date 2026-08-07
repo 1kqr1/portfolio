@@ -236,7 +236,7 @@ textarea:focus-visible,
   border: none;
   cursor: pointer;
   padding: 8px;
-  z-index: 1001;
+  z-index: 1060;
 }
 
 .nav-toggle span {
@@ -263,7 +263,7 @@ textarea:focus-visible,
 /* ----- Pages ----- */
 .page {
   display: none;
-  min-height: 100vh;
+  flex-grow: 1;
   padding-top: var(--nav-height);
   position: relative;
   z-index: 1;
@@ -271,7 +271,8 @@ textarea:focus-visible,
 }
 
 .page.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
   opacity: 1;
 }
 
@@ -853,8 +854,9 @@ textarea:focus-visible,
 /* ----- SKILLS ----- */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .skill-category {
@@ -1287,14 +1289,14 @@ textarea:focus-visible,
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(10, 10, 11, 0.98);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: var(--bg-primary);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    z-index: 999;
+    z-index: 1050;
   }
 
   .nav-links.open {
@@ -1384,4 +1386,14 @@ textarea:focus-visible,
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+/* ----- Utils (Added) ----- */
+.fade-in-image {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+.fade-in-image.loaded {
+  opacity: 1;
 }
