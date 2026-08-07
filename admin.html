@@ -114,11 +114,17 @@
 
     <!-- タブコンテンツ: スキル -->
     <div class="tab-content" id="tab-skills">
-      <p style="color:var(--text-soft); font-size:14px;">※スキルの追加・編集機能は現在シンプル版です（コード編集モーダル）</p>
-      <div class="form-group">
-        <textarea id="skills-json" class="form-textarea" style="height: 300px; font-family: monospace;"></textarea>
+      <div class="admin-header" style="margin-top:-20px; margin-bottom:20px; border:none; padding:0;">
+        <h2 style="font-size: 1.2rem;">スキル管理</h2>
+        <button class="btn btn-primary btn-sm" onclick="AdminApp.addSkillCategory()">＋ カテゴリを追加</button>
       </div>
-      <button class="btn btn-primary" onclick="AdminApp.saveSkills()">💾 スキル情報を保存</button>
+      <p style="color:var(--text-soft); font-size:13px; margin-bottom:16px;">各カテゴリのアイコン、カテゴリ名、スキル項目（カンマ区切り）を編集できます。</p>
+      
+      <div id="skills-editor-list" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 24px;">
+        <!-- JSで動的にレンダリング -->
+      </div>
+      
+      <button class="btn btn-primary" style="width: 100%;" onclick="AdminApp.saveSkills()">💾 スキル情報を保存</button>
     </div>
   </div>
 

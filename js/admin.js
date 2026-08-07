@@ -45,6 +45,15 @@
       });
     });
 
+    // モーダルの背景クリックで閉じる
+    document.querySelectorAll(".modal").forEach(modal => {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal(modal.id);
+        }
+      });
+    });
+
     // プロフィール保存
     document.getElementById("form-profile").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -362,17 +371,59 @@
 
   // ===== スキル (Skills) =====
   function renderSkills() {
-    document.getElementById("skills-json").value = JSON.stringify(appData.skills, null, 2);
+    const container = document.getElementById("skills-editor-list");
+    if (!container) return;
+    container.innerHTML = "";
+    
+    appData.skills.forEach((skill, index) => {
+      const itemsStr = skill.items ? skill.items.join(", ") : "";
+      container.innerHTML += `
+        <div style="background: var(--bg-card-hover); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--line); position: relative;">
+          <div style="display:flex; gap:12px; margin-bottom:12px;">
+            <div style="flex:0 0 60px;">
+              <label class="form-label">アイコン</label>
+              <input type="text" class="form-input" value="${skill.icon || ''}" onchange="AdminApp.updateSkill(${index}, 'icon', this.value)" placeholder="絵文字など">
+            </div>
+            <div style="flex:1;">
+              <label class="form-label">カテゴリ名</label>
+              <input type="text" class="form-input" value="${skill.category || ''}" onchange="AdminApp.updateSkill(${index}, 'category', this.value)" placeholder="例: Frontend">
+            </div>
+            <div style="flex:0 0 auto; display:flex; align-items:flex-end;">
+              <button class="btn btn-danger btn-sm" onclick="AdminApp.removeSkillCategory(${index})">削除</button>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">スキル項目 (カンマ区切り)</label>
+            <input type="text" class="form-input" value="${itemsStr}" onchange="AdminApp.updateSkill(${index}, 'items', this.value)" placeholder="HTML, CSS, JavaScript...">
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function addSkillCategory() {
+    appData.skills.push({ category: "New Category", icon: "✨", items: [] });
+    renderSkills();
+  }
+
+  function updateSkill(index, field, value) {
+    if (field === 'items') {
+      appData.skills[index][field] = value.split(',').map(s => s.trim()).filter(s => s !== "");
+    } else {
+      appData.skills[index][field] = value;
+    }
+  }
+
+  function removeSkillCategory(index) {
+    if (confirm("このカテゴリを削除しますか？")) {
+      appData.skills.splice(index, 1);
+      renderSkills();
+    }
   }
 
   function saveSkills() {
-    try {
-      appData.skills = JSON.parse(document.getElementById("skills-json").value);
-      saveData();
-      showToast("スキル情報を保存しました", "success");
-    } catch (e) {
-      showToast("JSON形式が不正です", "error");
-    }
+    saveData();
+    showToast("スキル情報を保存しました", "success");
   }
 
   // ===== ユーティリティ =====
@@ -387,6 +438,11 @@
     input.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
+      
+      if (!confirm("現在のデータはすべて上書きされます。インポートを続行しますか？")) {
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = (ev) => {
         const result = PortfolioStorage.importJSON(ev.target.result);
@@ -439,8 +495,8 @@
   window.AdminApp = {
     openProjectModal, editProject: openProjectModal, deleteProject, saveProject,
     openExperienceModal, editExperience: openExperienceModal, deleteExperience, saveExperience,
-    saveSkills, closeModal,
-    openGithubModal, addProjectFromGithub
+    saveSkills, addSkillCategory, updateSkill, removeSkillCategory, closeModal,
+    handleImport,
   };
 
   init();
