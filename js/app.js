@@ -36,6 +36,14 @@ class PortfolioApp {
     this.setupAdvancedEffects();
     this.renderAllContent();
 
+    // プレローダーの非表示（最低でも500ms表示してチラつき防止）
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        const preloader = document.getElementById("preloader");
+        if (preloader) preloader.classList.add("loaded");
+      }, 500);
+    });
+
     // 初期ページを設定（ハッシュから）
     const initialPage = window.location.hash.replace("#", "") || "home";
     this.navigateTo(initialPage, false);
@@ -207,6 +215,38 @@ class PortfolioApp {
       });
     };
     this.updateSpotlight = updateSpotlight;
+
+    // 3. Ripple Effect (ボタン等の波紋)
+    const setupRipple = () => {
+      const buttons = document.querySelectorAll(".nav-link, .btn, .btn-primary, .btn-outline");
+      buttons.forEach(btn => {
+        // 重複登録防止
+        if (btn.dataset.rippleBound) return;
+        btn.dataset.rippleBound = "1";
+        
+        btn.addEventListener("click", function (e) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const circle = document.createElement("span");
+          circle.classList.add("ripple");
+          
+          const diameter = Math.max(rect.width, rect.height);
+          circle.style.width = circle.style.height = `${diameter}px`;
+          circle.style.left = `${x - diameter / 2}px`;
+          circle.style.top = `${y - diameter / 2}px`;
+          
+          this.appendChild(circle);
+          
+          setTimeout(() => {
+            circle.remove();
+          }, 600);
+        });
+      });
+    };
+    setupRipple();
+    this.setupRipple = setupRipple; // 他の描画関数からも呼べるように
   }
 
   renderAllContent() {

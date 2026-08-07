@@ -143,24 +143,33 @@ class AnimationManager {
     requestAnimationFrame(update);
   }
 
-  // ----- ページ遷移アニメーション -----
+  // ----- ページ遷移アニメーション (Cinematic Wipe) -----
   async pageTransition(outElement, inElement) {
-    // フェードアウト
+    const transitionLayer = document.querySelector(".page-transition");
+    if (!transitionLayer) return;
+
+    // 1. カーテンを引き上げる (Slide in)
+    transitionLayer.classList.add("slide-in");
+    await this.wait(400); // カーテンが画面を覆うのを待つ
+
+    // 2. DOM要素の切り替え（裏側で）
     if (outElement) {
-      outElement.classList.add("page-exit");
-      await this.wait(300);
       outElement.classList.remove("active", "page-exit");
     }
-
-    // フェードイン
     if (inElement) {
-      inElement.classList.add("active", "page-enter");
-      await this.wait(50);
-      inElement.classList.remove("page-enter");
-      inElement.classList.add("page-enter-active");
-      await this.wait(400);
-      inElement.classList.remove("page-enter-active");
+      inElement.classList.add("active");
     }
+
+    // 3. カーテンをさらに上へ引き抜く (Slide out)
+    transitionLayer.classList.add("slide-out");
+    await this.wait(600); // 抜けきるのを待つ
+
+    // 4. クリーンアップ（位置リセット）
+    transitionLayer.style.transition = "none";
+    transitionLayer.classList.remove("slide-in", "slide-out");
+    // リフローさせてからトランジションを戻す
+    void transitionLayer.offsetWidth;
+    transitionLayer.style.transition = "";
   }
 
   wait(ms) {
