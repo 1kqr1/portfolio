@@ -33,6 +33,7 @@ class PortfolioApp {
     this.setupNavigation();
     this.setupMobileMenu();
     this.setupScrollEffects();
+    this.setupAdvancedEffects();
     this.renderAllContent();
 
     // 初期ページを設定（ハッシュから）
@@ -179,6 +180,35 @@ class PortfolioApp {
     }
   }
 
+  setupAdvancedEffects() {
+    const cursor = document.getElementById("custom-cursor");
+    if (cursor) {
+      window.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+      });
+      const hoverTargets = document.querySelectorAll("a, button, .project-card, .skill-category");
+      hoverTargets.forEach((target) => {
+        target.addEventListener("mouseenter", () => cursor.classList.add("hover"));
+        target.addEventListener("mouseleave", () => cursor.classList.remove("hover"));
+      });
+    }
+
+    const updateSpotlight = () => {
+      const cards = document.querySelectorAll(".project-card, .skill-category");
+      cards.forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty("--mouse-x", `${x}px`);
+          card.style.setProperty("--mouse-y", `${y}px`);
+        });
+      });
+    };
+    this.updateSpotlight = updateSpotlight;
+  }
+
   renderAllContent() {
     this.renderAbout();
     this.renderProjects();
@@ -303,6 +333,7 @@ class PortfolioApp {
     `;
       })
       .join("");
+    if (this.updateSpotlight) setTimeout(this.updateSpotlight, 100);
   }
 
   renderSkills() {
@@ -329,6 +360,7 @@ class PortfolioApp {
     `
       )
       .join("");
+    if (this.updateSpotlight) setTimeout(this.updateSpotlight, 100);
   }
 
   renderTimeline() {

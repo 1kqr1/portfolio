@@ -28,6 +28,11 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- ノイズテクスチャ -->
+  <div class="noise-overlay"></div>
+  <!-- カスタムカーソル -->
+  <div class="custom-cursor" id="custom-cursor"></div>
+
   <!-- ナビゲーション -->
   <nav id="main-nav" class="navbar">
     <div class="nav-container">
@@ -61,14 +66,22 @@
   <!-- ページコンテナ -->
   <main id="page-container">
 
-    <!-- ===== HOME ===== -->
+    <!-- 1. Home (Hero) -->
     <section id="page-home" class="page active">
-      <div class="hero">
-        <div class="hero-content">
-          <p class="hero-greeting">Hello, I'm</p>
-          <h1 class="hero-name">
-            <span class="neon-text">1kqr1</span>
-          </h1>
+      <!-- 巨大背景タイポグラフィ (Marquee) -->
+      <div class="hero-marquee">
+        <div class="marquee-track">
+          <span>1KQR1 DEVELOPER</span>
+          <span>1KQR1 DEVELOPER</span>
+          <span>1KQR1 DEVELOPER</span>
+          <span>1KQR1 DEVELOPER</span>
+        </div>
+      </div>
+
+      <div class="hero-content reveal-on-scroll">
+        <p class="hero-greeting">Hello, I'm</p>
+        <h1 class="hero-name glitch" data-text="1kqr1" id="hero-name-target">1kqr1</h1>
+        <h2 class="hero-tagline" id="hero-tagline-target">Front-end Developer</h2>
           <div class="hero-tagline">
             <span id="typing-text"></span>
             <span class="typing-cursor">|</span>
