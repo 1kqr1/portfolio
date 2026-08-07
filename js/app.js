@@ -6,7 +6,6 @@ class PortfolioApp {
   constructor() {
     this.currentPage = "home";
     this.animations = new AnimationManager();
-    this.particles = null;
     this.isTransitioning = false;
 
     // 公開サイトは常に data.js を正とする。
@@ -34,11 +33,6 @@ class PortfolioApp {
     this.setupMobileMenu();
     this.setupScrollEffects();
     this.renderAllContent();
-
-    // パーティクル背景（モーション控えめ設定のときは動かさない）
-    if (!this.reduceMotion) {
-      this.particles = new ParticleSystem("particle-canvas");
-    }
 
     // 初期ページを設定（ハッシュから）
     const initialPage = window.location.hash.replace("#", "") || "home";

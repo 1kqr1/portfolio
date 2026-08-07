@@ -30,7 +30,8 @@
     document.getElementById("btn-reset").addEventListener("click", handleReset);
     document.getElementById("btn-export-js").addEventListener("click", handleExportJS);
     document.getElementById("btn-preview").addEventListener("click", () => window.open("index.html?preview=local", "_blank"));
-    
+    document.getElementById("btn-github-fetch").addEventListener("click", fetchGithubRepos);
+
     // タブ切り替え
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", (e) => {
@@ -183,6 +184,94 @@
       renderProjects();
       showToast("削除しました", "info");
     }
+  }
+
+  // ===== GitHub 候補リスト =====
+  // 認証なしで叩くため、公開リポジトリのみが対象（非公開は自動的に取得できない＝除外される）
+  let githubRepos = [];
+
+  function openGithubModal() {
+    document.getElementById("modal-github").classList.add("open");
+    if (!githubRepos.length) {
+      fetchGithubRepos();
+    }
+  }
+
+  async function fetchGithubRepos() {
+    const username = document.getElementById("github-username").value.trim();
+    const listEl = document.getElementById("github-repo-list");
+    if (!username) {
+      showToast("GitHubユーザー名を入力してください", "error");
+      return;
+    }
+    const btn = document.getElementById("btn-github-fetch");
+    btn.disabled = true;
+    btn.textContent = "取得中...";
+    listEl.innerHTML = `<div class="empty-state">読み込み中...</div>`;
+    try {
+      const res = await fetch(
+        `https://api.github.com/users/${encodeURIComponent(username)}/repos?sort=updated&per_page=100`
+      );
+      if (!res.ok) {
+        throw new Error(res.status === 404 ? "ユーザーが見つかりません" : `取得に失敗しました (${res.status})`);
+      }
+      const repos = await res.json();
+      githubRepos = repos.filter((r) => !r.fork);
+      renderGithubRepoList();
+    } catch (e) {
+      listEl.innerHTML = `<div class="empty-state">${escapeHtml(e.message)}</div>`;
+      githubRepos = [];
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "取得";
+    }
+  }
+
+  function renderGithubRepoList() {
+    const listEl = document.getElementById("github-repo-list");
+    if (!githubRepos.length) {
+      listEl.innerHTML = `<div class="empty-state">公開リポジトリが見つかりませんでした</div>`;
+      return;
+    }
+    listEl.innerHTML = githubRepos
+      .map(
+        (repo, i) => `
+      <div class="list-item">
+        <div class="item-info">
+          <div class="item-title">${escapeHtml(repo.name)}</div>
+          <div class="item-meta">
+            ${repo.language ? `<span class="badge badge-accent">${escapeHtml(repo.language)}</span>` : ""}
+            <span>${repo.description ? escapeHtml(repo.description) : "説明なし"}</span>
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-sm" onclick="AdminApp.addProjectFromGithub(${i})">＋ 追加</button>
+        </div>
+      </div>
+    `
+      )
+      .join("");
+  }
+
+  function addProjectFromGithub(index) {
+    const repo = githubRepos[index];
+    if (!repo) return;
+    openProjectModal(-1);
+    const slug = "project-" + repo.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    document.getElementById("proj-id").value = slug;
+    document.getElementById("proj-title").value = repo.name;
+    document.getElementById("proj-description").value = repo.description || "";
+    document.getElementById("proj-tags").value = repo.language || "";
+    document.getElementById("proj-live").value = repo.homepage || "";
+    document.getElementById("proj-github").value = repo.html_url || "";
+    closeModal("modal-github");
+    showToast("内容を確認して保存してください", "info");
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
   }
 
   // ===== 経歴 (Experience) =====
@@ -338,7 +427,8 @@
   window.AdminApp = {
     openProjectModal, editProject: openProjectModal, deleteProject, saveProject,
     openExperienceModal, editExperience: openExperienceModal, deleteExperience, saveExperience,
-    saveSkills, closeModal
+    saveSkills, closeModal,
+    openGithubModal, addProjectFromGithub
   };
 
   init();

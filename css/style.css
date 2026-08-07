@@ -1,28 +1,36 @@
 /* ============================================================
    style.css — 1kqr1 ポートフォリオ
-   ダークモード + エメラルドネオン
+   グレー基調のモダンダーク
    ============================================================ */
 
 /* ----- CSS Custom Properties ----- */
 :root {
-  /* Colors */
-  --bg-primary: #06060b;
-  --bg-secondary: #0c0c14;
-  --bg-surface: #12121e;
-  --bg-card: #161625;
-  --bg-card-hover: #1c1c30;
-  --border-color: rgba(0, 255, 170, 0.1);
-  --border-hover: rgba(0, 255, 170, 0.3);
+  /* Colors — グレー基調のモダンダーク */
+  --bg-primary: #0a0a0b;
+  --bg-secondary: #111113;
+  --bg-surface: #17171a;
+  --bg-card: #1c1c1f;
+  --bg-card-hover: #232327;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.18);
 
-  --text-primary: #e8e8f0;
-  --text-secondary: #9898aa;
-  --text-muted: #5a5a6e;
+  --text-primary: #f5f5f6;
+  --text-secondary: #9a9aa4;
+  --text-muted: #5c5c66;
 
-  --accent: #00ffaa;
-  --accent-rgb: 0, 255, 170;
-  --accent-dim: #00cc88;
-  --accent-glow: rgba(0, 255, 170, 0.4);
-  --accent-bg: rgba(0, 255, 170, 0.06);
+  --accent: #e4e4e7;
+  --accent-rgb: 228, 228, 231;
+  --accent-dim: #c4c4ca;
+  --accent-glow: rgba(228, 228, 231, 0.25);
+  --accent-bg: rgba(255, 255, 255, 0.06);
+
+  /* サブトルな差し色（バッジ等） */
+  --accent-2: #7c8ff0;
+  --accent-2-rgb: 124, 143, 240;
+  --accent-2-bg: rgba(124, 143, 240, 0.08);
+
+  /* クローム（トリム・境界線用） */
+  --chrome-gradient: linear-gradient(135deg, #6f7076 0%, #d4d4d8 45%, #6f7076 100%);
 
   /* Typography */
   --font-heading: "Outfit", sans-serif;
@@ -76,11 +84,11 @@ a {
 }
 
 a:hover {
-  color: #33ffbb;
+  color: #ffffff;
 }
 
 ::selection {
-  background: rgba(0, 255, 170, 0.25);
+  background: rgba(var(--accent-rgb), 0.25);
   color: #fff;
 }
 
@@ -105,23 +113,12 @@ textarea:focus-visible,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 255, 170, 0.2);
+  background: rgba(var(--accent-rgb), 0.2);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 255, 170, 0.4);
-}
-
-/* ----- Canvas Background ----- */
-#particle-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
+  background: rgba(var(--accent-rgb), 0.4);
 }
 
 /* ----- Navbar ----- */
@@ -135,12 +132,12 @@ textarea:focus-visible,
   transition: var(--transition-base);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  background: rgba(6, 6, 11, 0.8);
+  background: rgba(10, 10, 11, 0.8);
   border-bottom: 1px solid var(--border-color);
 }
 
 .navbar.scrolled {
-  background: rgba(6, 6, 11, 0.95);
+  background: rgba(10, 10, 11, 0.95);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -175,7 +172,7 @@ textarea:focus-visible,
 }
 
 .logo-text {
-  background: linear-gradient(135deg, var(--accent) 0%, #00ccff 100%);
+  background: linear-gradient(135deg, #ffffff 0%, var(--accent-dim) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -304,10 +301,10 @@ textarea:focus-visible,
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 3px;
-  color: var(--accent);
+  color: var(--text-secondary);
   display: inline-block;
   padding: 0.3rem 1rem;
-  border: 1px solid rgba(0, 255, 170, 0.2);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-full);
   margin-bottom: 1rem;
   background: var(--accent-bg);
@@ -322,12 +319,12 @@ textarea:focus-visible,
 }
 
 .section-line {
-  width: 60px;
+  width: 40px;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), transparent);
+  background: var(--accent);
+  opacity: 0.5;
   margin: 0 auto;
   border-radius: var(--radius-full);
-  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 /* ----- HERO ----- */
@@ -369,11 +366,11 @@ textarea:focus-visible,
 }
 
 .neon-text {
-  background: linear-gradient(135deg, var(--accent) 0%, #00ddcc 50%, #00ccff 100%);
+  background: linear-gradient(100deg, #ffffff 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(0, 255, 170, 0.3));
+  filter: drop-shadow(0 0 20px rgba(var(--accent-rgb), 0.2));
 }
 
 .hero-tagline {
@@ -440,7 +437,7 @@ textarea:focus-visible,
   width: 400px;
   height: 400px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 255, 170, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.08) 0%, transparent 70%);
   top: 20%;
   right: 10%;
   animation: float 8s ease-in-out infinite;
@@ -449,23 +446,11 @@ textarea:focus-visible,
 .hero-orb-2 {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, rgba(0, 200, 255, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(var(--accent-rgb), 0.05) 0%, transparent 70%);
   top: 50%;
   left: 5%;
   animation-delay: -4s;
   animation-duration: 10s;
-}
-
-.hero-ring {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 255, 170, 0.05);
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  animation: pulse-ring 4s ease-in-out infinite;
 }
 
 @keyframes float {
@@ -475,18 +460,6 @@ textarea:focus-visible,
   }
   50% {
     transform: translateY(-30px) scale(1.05);
-  }
-}
-
-@keyframes pulse-ring {
-  0%,
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.1);
-    opacity: 0.1;
   }
 }
 
@@ -539,13 +512,13 @@ textarea:focus-visible,
 
 .btn-primary {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dim) 100%);
-  color: #06060b;
+  color: var(--bg-primary);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(var(--accent-rgb), 0.3);
-  color: #06060b;
+  color: var(--bg-primary);
 }
 
 .btn-primary:active {
@@ -727,6 +700,27 @@ textarea:focus-visible,
   position: relative;
 }
 
+/* ホバーで光が一筋通るシンプルなシーン効果 */
+.project-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.16) 50%,
+    transparent 55%
+  );
+  transform: translateX(-140%);
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.project-card:hover .project-image::after {
+  transform: translateX(140%);
+}
+
 .project-image img {
   width: 100%;
   height: 100%;
@@ -766,7 +760,7 @@ textarea:focus-visible,
 .project-image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 50%, rgba(6, 6, 11, 0.8) 100%);
+  background: linear-gradient(to bottom, transparent 50%, rgba(10, 10, 11, 0.8) 100%);
 }
 
 /* 額装パネルは画像自体に影が付くのでオーバーレイは不要 */
@@ -851,6 +845,20 @@ textarea:focus-visible,
   border-radius: var(--radius-lg);
   padding: 2rem;
   transition: var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+/* クロームトリム風のアクセントライン */
+.skill-category::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--chrome-gradient);
+  opacity: 0.6;
 }
 
 .skill-category:hover {
@@ -962,7 +970,8 @@ textarea:focus-visible,
   top: 0;
   bottom: 0;
   width: 2px;
-  background: linear-gradient(to bottom, var(--accent), rgba(var(--accent-rgb), 0.1));
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  opacity: 0.4;
 }
 
 .timeline-item {
@@ -1063,21 +1072,21 @@ textarea:focus-visible,
 }
 
 .timeline-type.education {
-  background: rgba(100, 150, 255, 0.1);
-  color: #6496ff;
-  border: 1px solid rgba(100, 150, 255, 0.2);
+  background: rgba(45, 200, 180, 0.1);
+  color: #2dc8b4;
+  border: 1px solid rgba(45, 200, 180, 0.22);
 }
 
 .timeline-type.work {
-  background: rgba(255, 170, 0, 0.1);
-  color: #ffaa00;
-  border: 1px solid rgba(255, 170, 0, 0.2);
+  background: rgba(200, 205, 215, 0.1);
+  color: #ccd2db;
+  border: 1px solid rgba(200, 205, 215, 0.25);
 }
 
 .timeline-type.project {
-  background: var(--accent-bg);
-  color: var(--accent);
-  border: 1px solid rgba(var(--accent-rgb), 0.2);
+  background: var(--accent-2-bg);
+  color: var(--accent-2);
+  border: 1px solid rgba(var(--accent-2-rgb), 0.25);
 }
 
 .timeline-description {
@@ -1173,7 +1182,7 @@ textarea:focus-visible,
   padding: 1.5rem var(--page-padding);
   border-top: 1px solid var(--border-color);
   text-align: center;
-  background: rgba(6, 6, 11, 0.6);
+  background: rgba(10, 10, 11, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -1236,7 +1245,7 @@ textarea:focus-visible,
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(6, 6, 11, 0.98);
+    background: rgba(10, 10, 11, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     flex-direction: column;
@@ -1279,11 +1288,6 @@ textarea:focus-visible,
   .hero-orb-2 {
     width: 200px;
     height: 200px;
-  }
-
-  .hero-ring {
-    width: 300px;
-    height: 300px;
   }
 
   .timeline {
