@@ -1187,9 +1187,33 @@ textarea:focus-visible,
   -webkit-backdrop-filter: blur(10px);
 }
 
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+}
+
 .footer-text {
   font-size: 0.85rem;
   color: var(--text-muted);
+}
+
+.footer-admin-link {
+  position: absolute;
+  right: 0;
+  font-size: 0.75rem;
+  color: var(--text-muted) !important;
+  opacity: 0.6;
+  transition: var(--transition-fast);
+}
+
+.footer-admin-link:hover {
+  opacity: 1;
+  color: var(--text-secondary) !important;
 }
 
 /* ----- Scroll Reveal Animation ----- */

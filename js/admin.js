@@ -5,7 +5,10 @@
 (function () {
   "use strict";
 
-  const ADMIN_PASSWORD = "admin";
+  // "admin" という文字列をSHA-256でハッシュ化した値
+  // 変更したい場合はブラウザのコンソールで await crypto.subtle.digest("SHA-256", new TextEncoder().encode("新しいパスワード")).then(b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('')) を実行して書き換えます
+  const ADMIN_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
+  
   let appData = null;
 
   // ===== DOM =====
@@ -49,13 +52,22 @@
     });
   }
 
-  function handleLogin(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    if (passwordInput.value === ADMIN_PASSWORD) {
+    const password = passwordInput.value;
+    
+    // ブラウザの機能で入力されたパスワードをハッシュ化
+    const msgUint8 = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    if (hashHex === ADMIN_HASH) {
       sessionStorage.setItem("admin_auth", "true");
       loginError.classList.remove("show");
       showDashboard();
     } else {
+      loginError.textContent = "パスワードが違います";
       loginError.classList.add("show");
     }
   }
@@ -64,7 +76,7 @@
     sessionStorage.removeItem("admin_auth");
     dashboard.classList.remove("active");
     loginScreen.style.display = "flex";
-    passwordInput.value = "";
+    if (passwordInput) passwordInput.value = "";
   }
 
   function showDashboard() {
