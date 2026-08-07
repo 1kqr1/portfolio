@@ -33,22 +33,17 @@
   <!-- ダッシュボード -->
   <div class="dashboard" id="dashboard">
     <header class="admin-header">
-      <div class="admin-brand">
-        <span class="logo-bracket">&lt;</span><span class="logo-text">1kqr1</span><span class="logo-bracket">/&gt;</span>
-        <span class="admin-brand-sub">Data Editor</span>
-      </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn" id="btn-preview">👁 Preview</button>
-        <button class="btn btn-danger" id="btn-logout">Logout</button>
+      <h2>Portfolio Dashboard</h2>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-outline" id="btn-undo" style="display:none;" onclick="AdminApp.undo()">🔙 元に戻す (Undo)</button>
+        <button class="btn btn-outline" id="btn-preview">👀 プレビュー</button>
+        <button class="btn btn-primary" id="btn-export">📥 データ保存 (.json)</button>
+        <button class="btn btn-outline" id="btn-import">📤 データ読込</button>
+        <button class="btn btn-danger" id="btn-reset">⚠️ リセット</button>
+        <button class="btn btn-primary" id="btn-export-js">🚀 公開用データ出力</button>
+        <button class="btn btn-outline" id="btn-logout">ログアウト</button>
       </div>
     </header>
-
-    <div class="toolbar">
-      <button class="btn" id="btn-export">📤 バックアップDL</button>
-      <button class="btn" id="btn-import">📥 データ読込</button>
-      <button class="btn" id="btn-export-js">📄 data.js生成 (GitHub用)</button>
-      <button class="btn btn-danger" id="btn-reset">🔄 初期化</button>
-    </div>
 
     <!-- タブナビゲーション -->
     <div class="tabs">
@@ -71,23 +66,42 @@
             <input type="text" id="prof-realname" class="form-input" />
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">肩書き (Tagline)</label>
-          <input type="text" id="prof-tagline" class="form-input" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="prof-tagline">キャッチフレーズ (Tagline)</label>
+            <input type="text" id="prof-tagline" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">所属 (大学・学部など)</label>
+            <input type="text" id="prof-affiliation" class="form-input" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="prof-location">拠点 (Location)</label>
+            <input type="text" id="prof-location" class="form-input" />
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">所属 (大学・学部など)</label>
-          <input type="text" id="prof-affiliation" class="form-input" />
+          <label class="form-label" for="prof-bio">自己紹介 (Bio)</label>
+          <textarea id="prof-bio" class="form-textarea" rows="4" required></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">自己紹介 (Bio)</label>
-          <textarea id="prof-bio" class="form-textarea" required></textarea>
+        
+        <hr style="border:0; border-top:1px solid var(--border-color); margin:30px 0;">
+        <h3 style="font-size:1.1rem; margin-bottom:15px; color:var(--text-primary);">サイト公開設定 (OGP)</h3>
+        <p style="color:var(--text-soft); font-size:13px; margin-bottom:15px;">SNSでシェアされた際に表示される情報を設定します。画像URLにはフルパス（https://.../ogp.png）を指定してください。</p>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="settings-site-url">サイトの公開URL (Site URL)</label>
+            <input type="text" id="settings-site-url" class="form-input" placeholder="https://portfolio.com/" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="settings-ogp-image">OGP画像URL (OGP Image)</label>
+            <input type="text" id="settings-ogp-image" class="form-input" placeholder="https://portfolio.com/images/ogp.png" />
+          </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">場所 (Location)</label>
-          <input type="text" id="prof-location" class="form-input" />
-        </div>
-        <button type="submit" class="btn btn-primary">💾 プロフィールを保存</button>
+
+        <button type="submit" class="btn btn-primary">💾 プロフィール・設定を保存</button>
       </form>
     </div>
 

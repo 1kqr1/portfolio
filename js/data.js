@@ -111,4 +111,16 @@ const DATA = {
       type: "project",
     },
   ],
+
+  // ----- サイト設定 -----
+  settings: {
+    siteUrl: "",  // 例: https://portfolio.com/
+    ogpImage: "", // 例: https://portfolio.com/images/ogp.png
+  },
 };
+
+// ============================================================
+// Node環境（プレビュー等）用エクスポート
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = DATA;
+}

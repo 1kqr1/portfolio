@@ -110,6 +110,10 @@
     document.getElementById("prof-affiliation").value = appData.profile.affiliation || "";
     document.getElementById("prof-bio").value = appData.profile.bio || "";
     document.getElementById("prof-location").value = appData.profile.location || "";
+    if (appData.settings) {
+      document.getElementById("settings-site-url").value = appData.settings.siteUrl || "";
+      document.getElementById("settings-ogp-image").value = appData.settings.ogpImage || "";
+    }
   }
 
   function saveProfile() {
@@ -119,6 +123,11 @@
     appData.profile.affiliation = document.getElementById("prof-affiliation").value;
     appData.profile.bio = document.getElementById("prof-bio").value;
     appData.profile.location = document.getElementById("prof-location").value;
+    
+    if (!appData.settings) appData.settings = {};
+    appData.settings.siteUrl = document.getElementById("settings-site-url").value;
+    appData.settings.ogpImage = document.getElementById("settings-ogp-image").value;
+
     saveData();
     showToast("プロフィールを保存しました", "success");
   }
@@ -428,7 +437,23 @@
 
   // ===== ユーティリティ =====
   function saveData() {
+    localStorage.setItem("portfolio_backup", JSON.stringify(appData));
+    document.getElementById("btn-undo").style.display = "block";
     PortfolioStorage.saveData(appData);
+  }
+
+  function undo() {
+    const backup = localStorage.getItem("portfolio_backup");
+    if (backup) {
+      appData = JSON.parse(backup);
+      PortfolioStorage.saveData(appData);
+      renderAll();
+      showToast("一つ前の状態に復元しました", "success");
+      document.getElementById("btn-undo").style.display = "none";
+      localStorage.removeItem("portfolio_backup");
+    } else {
+      showToast("復元できるデータがありません", "error");
+    }
   }
 
   function handleImport() {
@@ -496,7 +521,7 @@
     openProjectModal, editProject: openProjectModal, deleteProject, saveProject,
     openExperienceModal, editExperience: openExperienceModal, deleteExperience, saveExperience,
     saveSkills, addSkillCategory, updateSkill, removeSkillCategory, closeModal,
-    handleImport,
+    handleImport, undo,
   };
 
   init();

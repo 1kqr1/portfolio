@@ -29,6 +29,7 @@ class PortfolioApp {
     ).matches;
 
     // DOM準備完了後に実行
+    this.setupOGP();
     this.setupNavigation();
     this.setupMobileMenu();
     this.setupScrollEffects();
@@ -165,6 +166,19 @@ class PortfolioApp {
   }
 
   // ----- コンテンツ描画 -----
+  setupOGP() {
+    if (this.data.settings) {
+      if (this.data.settings.siteUrl) {
+        const ogUrl = document.getElementById("meta-og-url");
+        if (ogUrl) ogUrl.setAttribute("content", this.data.settings.siteUrl);
+      }
+      if (this.data.settings.ogpImage) {
+        const ogImage = document.getElementById("meta-og-image");
+        if (ogImage) ogImage.setAttribute("content", this.data.settings.ogpImage);
+      }
+    }
+  }
+
   renderAllContent() {
     this.renderAbout();
     this.renderProjects();
