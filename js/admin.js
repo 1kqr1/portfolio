@@ -100,6 +100,7 @@
     renderProjects();
     renderExperience();
     renderSkills();
+    renderDiaryList();
   }
 
   // ===== プロフィール =====
@@ -435,6 +436,98 @@
     showToast("スキル情報を保存しました", "success");
   }
 
+  // ===== 日記 (Diary) =====
+  function renderDiaryList() {
+    const list = document.getElementById("list-diary");
+    if (!list) return;
+    list.innerHTML = "";
+    if (!appData.diary || !appData.diary.length) {
+      list.innerHTML = `<div class="empty-state">まだ日記がありません。「＋ 新規追加」から投稿してください。</div>`;
+      return;
+    }
+    appData.diary.forEach((d, index) => {
+      list.innerHTML += `
+        <div class="list-item">
+          <div class="item-info">
+            <div class="item-title">${d.title}</div>
+            <div class="item-meta">
+              <span>Date: ${d.date}</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn btn-sm" onclick="AdminApp.editDiary(${index})">編集</button>
+            <button class="btn btn-danger btn-sm" onclick="AdminApp.deleteDiary(${index})">削除</button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function openDiaryModal(index = -1) {
+    const modal = document.getElementById("modal-diary");
+    if (!modal) return;
+    document.getElementById("diary-modal-title").innerText = index === -1 ? "日記を追加" : "日記を編集";
+    document.getElementById("diary-index").value = index;
+    
+    if (index === -1) {
+      document.getElementById("form-diary").reset();
+      // 今日の日付をセット
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("diary-date").value = today;
+    } else {
+      const d = appData.diary[index];
+      document.getElementById("diary-title").value = d.title || "";
+      document.getElementById("diary-date").value = d.date || "";
+      document.getElementById("diary-content").value = d.content || "";
+    }
+    modal.classList.add("open");
+  }
+
+  function saveDiary() {
+    if (!appData.diary) appData.diary = [];
+    const index = parseInt(document.getElementById("diary-index").value);
+    
+    // バリデーション
+    const title = document.getElementById("diary-title").value.trim();
+    const date = document.getElementById("diary-date").value;
+    const content = document.getElementById("diary-content").value.trim();
+    if (!title || !date || !content) {
+      showToast("すべての項目を入力してください", "error");
+      return;
+    }
+
+    const entry = {
+      id: index === -1 ? `diary-${Date.now()}` : appData.diary[index].id,
+      title: title,
+      date: date,
+      content: content
+    };
+
+    if (index === -1) {
+      // 先頭に追加（最新が上）
+      appData.diary.unshift(entry);
+    } else {
+      appData.diary[index] = entry;
+    }
+    
+    // 日付順でソート（新しい順）
+    appData.diary.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    saveData();
+    renderDiaryList();
+    closeModal("modal-diary");
+    showToast("日記を保存しました", "success");
+  }
+
+  function deleteDiary(index) {
+    if (confirm(`「${appData.diary[index].title}」を削除しますか？`)) {
+      appData.diary.splice(index, 1);
+      saveData();
+      renderDiaryList();
+      showToast("削除しました", "info");
+    }
+  }
+
   // ===== ユーティリティ =====
   function saveData() {
     localStorage.setItem("portfolio_backup", JSON.stringify(appData));
@@ -521,6 +614,7 @@
     openProjectModal, editProject: openProjectModal, deleteProject, saveProject,
     openExperienceModal, editExperience: openExperienceModal, deleteExperience, saveExperience,
     saveSkills, addSkillCategory, updateSkill, removeSkillCategory, closeModal,
+    openDiaryModal, editDiary: openDiaryModal, deleteDiary, saveDiary,
     handleImport, undo,
   };
 

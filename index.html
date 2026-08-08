@@ -56,12 +56,13 @@
       </div>
 
       <ul class="nav-links" id="nav-links">
-        <li><a href="#home" class="nav-link active" data-page="home">Home</a></li>
-        <li><a href="#about" class="nav-link" data-page="about">About</a></li>
-        <li><a href="#projects" class="nav-link" data-page="projects">Projects</a></li>
-        <li><a href="#skills" class="nav-link" data-page="skills">Skills</a></li>
-        <li><a href="#experience" class="nav-link" data-page="experience">Experience</a></li>
-        <li><a href="#contact" class="nav-link" data-page="contact">Contact</a></li>
+        <li><a href="#home" class="nav-link active" data-page="home">ホーム</a></li>
+        <li><a href="#about" class="nav-link" data-page="about">私について</a></li>
+        <li><a href="#projects" class="nav-link" data-page="projects">作品</a></li>
+        <li><a href="#skills" class="nav-link" data-page="skills">スキル</a></li>
+        <li><a href="#experience" class="nav-link" data-page="experience">経歴</a></li>
+        <li><a href="#diary" class="nav-link" data-page="diary">日記</a></li>
+        <li><a href="#contact" class="nav-link" data-page="contact">お問い合わせ</a></li>
       </ul>
       <button class="nav-toggle" id="nav-toggle" aria-label="メニュー">
         <span></span>
@@ -164,21 +165,34 @@
       </div>
     </section>
 
-    <!-- ===== EXPERIENCE ===== -->
+    <!-- 5. Experience -->
     <section id="page-experience" class="page">
       <div class="page-inner">
         <div class="section-header reveal-on-scroll">
           <span class="section-label">Experience</span>
-          <h2 class="section-title">経歴</h2>
-          <div class="section-line"></div>
+          <h2 class="section-title">これまでの<span class="neon-text">歩み</span></h2>
         </div>
         <div class="timeline reveal-on-scroll" id="timeline">
-          <!-- data.jsから動的に生成 -->
+          <!-- 経歴がJSで挿入されます -->
         </div>
       </div>
     </section>
 
-    <!-- ===== CONTACT ===== -->
+    <!-- 6. Diary (ブログ機能) -->
+    <section id="page-diary" class="page">
+      <div class="page-inner">
+        <div class="section-header reveal-on-scroll">
+          <span class="section-label">Diary</span>
+          <h2 class="section-title">開発の<span class="neon-text">記録と日常</span></h2>
+        </div>
+        <!-- 日記一覧 -->
+        <div id="diary-container" class="diary-grid">
+          <!-- 日記カードがJSで挿入されます -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Contact -->
     <section id="page-contact" class="page">
       <div class="page-inner">
         <div class="section-header reveal-on-scroll">
@@ -203,6 +217,16 @@
     </section>
 
   </main>
+
+  <!-- 日記詳細モーダル -->
+  <div id="diary-modal" class="modal">
+    <div class="modal-content diary-modal-content">
+      <span class="close-modal" id="close-diary-modal">&times;</span>
+      <h2 id="diary-modal-title" class="diary-title-large"></h2>
+      <div id="diary-modal-date" class="diary-date"></div>
+      <div id="diary-modal-body" class="diary-body"></div>
+    </div>
+  </div>
 
   <!-- フッター -->
   <footer class="footer">

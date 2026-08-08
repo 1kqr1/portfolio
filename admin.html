@@ -51,6 +51,7 @@
       <button class="tab-btn" data-tab="tab-projects">作品 (Projects)</button>
       <button class="tab-btn" data-tab="tab-experience">経歴 (Experience)</button>
       <button class="tab-btn" data-tab="tab-skills">スキル (Skills)</button>
+      <button class="tab-btn" data-tab="tab-diary">日記 (Diary)</button>
     </div>
 
     <!-- タブコンテンツ: プロフィール -->
@@ -139,6 +140,17 @@
       </div>
       
       <button class="btn btn-primary" style="width: 100%;" onclick="AdminApp.saveSkills()">💾 スキル情報を保存</button>
+    </div>
+
+    <!-- タブコンテンツ: 日記 -->
+    <div class="tab-content" id="tab-diary">
+      <div class="admin-header" style="margin-top:-20px; margin-bottom:20px; border:none; padding:0;">
+        <h2 style="font-size: 1.2rem;">日記管理</h2>
+        <button class="btn btn-primary btn-sm" onclick="AdminApp.openDiaryModal(-1)">＋ 新規追加</button>
+      </div>
+      <div class="item-list" id="list-diary">
+        <!-- JSで描画 -->
+      </div>
     </div>
   </div>
 
@@ -235,6 +247,37 @@
       <div class="modal-footer">
         <button class="btn" onclick="AdminApp.closeModal('modal-experience')">キャンセル</button>
         <button class="btn btn-primary" onclick="AdminApp.saveExperience()">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 日記用モーダル -->
+  <div class="modal-overlay" id="modal-diary">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="diary-modal-title">日記を追加</h3>
+        <button class="btn btn-icon" onclick="AdminApp.closeModal('modal-diary')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-diary">
+          <input type="hidden" id="diary-index" value="-1" />
+          <div class="form-group">
+            <label class="form-label">タイトル</label>
+            <input type="text" id="diary-title" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">日付 (YYYY-MM-DD)</label>
+            <input type="date" id="diary-date" class="form-input" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">本文 (マークダウン風 or プレーンテキスト)</label>
+            <textarea id="diary-content" class="form-textarea" required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="AdminApp.closeModal('modal-diary')">キャンセル</button>
+        <button class="btn btn-primary" onclick="AdminApp.saveDiary()">保存</button>
       </div>
     </div>
   </div>

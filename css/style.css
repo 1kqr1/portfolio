@@ -1612,3 +1612,62 @@ textarea:focus-visible,
   position: relative;
   overflow: hidden;
 }
+
+/* ==========================================================
+   5. 日記 (Diary)
+   ========================================================== */
+.diary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.diary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition-base);
+  position: relative;
+}
+.diary-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+.diary-card-date {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.diary-card-title {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+.diary-card-excerpt {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.diary-modal-content {
+  max-width: 600px;
+  padding: 2.5rem;
+}
+.diary-title-large {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+.diary-date {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 2rem;
+}
+.diary-body {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}

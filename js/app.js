@@ -7,6 +7,7 @@ class PortfolioApp {
     this.currentPage = "home";
     this.animations = new AnimationManager();
     this.isTransitioning = false;
+    window.portfolioApp = this;
 
     // 公開サイトは常に data.js を正とする。
     // 管理画面(admin.html)の「プレビュー」だけ ?preview=local でローカル下書きを表示。
@@ -18,6 +19,8 @@ class PortfolioApp {
         : typeof DATA !== "undefined"
         ? DATA
         : {};
+    
+    window.PortfolioData = this.data;
 
     this.init();
   }
@@ -34,6 +37,7 @@ class PortfolioApp {
     this.setupMobileMenu();
     this.setupScrollEffects();
     this.setupAdvancedEffects();
+    this.setupDiaryModal();
     this.renderAllContent();
 
     // プレローダーの非表示（最低でも500ms表示してチラつき防止）
@@ -158,6 +162,22 @@ class PortfolioApp {
     }
   }
 
+  // ----- その他のイベント -----
+  setupDiaryModal() {
+    const closeDiaryBtn = document.getElementById("close-diary-modal");
+    if (closeDiaryBtn) {
+      closeDiaryBtn.addEventListener("click", () => {
+        document.getElementById("diary-modal").classList.remove("active");
+      });
+    }
+    const diaryModal = document.getElementById("diary-modal");
+    if (diaryModal) {
+      diaryModal.addEventListener("click", (e) => {
+        if (e.target === diaryModal) diaryModal.classList.remove("active");
+      });
+    }
+  }
+
   // ----- スクロールエフェクト -----
   setupScrollEffects() {
     let lastScroll = 0;
@@ -254,6 +274,7 @@ class PortfolioApp {
     this.renderProjects();
     this.renderSkills();
     this.renderTimeline();
+    this.renderDiary();
   }
 
   renderAbout() {
@@ -429,6 +450,39 @@ class PortfolioApp {
       .join("");
   }
 
+  renderDiary() {
+    const container = document.getElementById("diary-container");
+    if (!container) return;
+
+    if (!window.PortfolioData.diary || window.PortfolioData.diary.length === 0) {
+      container.innerHTML = `<p class="text-secondary" style="text-align: center; grid-column: 1/-1;">まだ日記はありません。</p>`;
+      return;
+    }
+
+    container.innerHTML = window.PortfolioData.diary
+      .map((entry, index) => `
+        <div class="diary-card stagger-item" onclick="window.portfolioApp.openDiaryModal(${index})">
+          <div class="diary-card-date">${entry.date}</div>
+          <h3 class="diary-card-title">${entry.title}</h3>
+          <p class="diary-card-excerpt">${entry.content.substring(0, 80)}...</p>
+        </div>
+      `)
+      .join("");
+      
+    if (this.updateSpotlight) setTimeout(this.updateSpotlight, 100);
+  }
+
+  openDiaryModal(index) {
+    const entry = window.PortfolioData.diary[index];
+    if (!entry) return;
+    
+    document.getElementById("diary-modal-title").textContent = entry.title;
+    document.getElementById("diary-modal-date").textContent = entry.date;
+    document.getElementById("diary-modal-body").innerHTML = entry.content.replace(/\n/g, '<br>');
+    
+    document.getElementById("diary-modal").classList.add("active");
+  }
+
   getTypeLabel(type) {
     const labels = {
       education: "Education",
@@ -437,7 +491,6 @@ class PortfolioApp {
     };
     return labels[type] || type;
   }
-
 }
 
 // ----- 起動 -----
