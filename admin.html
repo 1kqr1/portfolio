@@ -270,6 +270,11 @@
             <input type="date" id="diary-date" class="form-input" required />
           </div>
           <div class="form-group">
+            <label class="form-label">画像 (ファイル選択またはURL)</label>
+            <input type="file" id="diary-image-file" class="form-input" accept="image/*" style="margin-bottom: 0.5rem;" />
+            <input type="text" id="diary-image" class="form-input" placeholder="画像のURL または パス" />
+          </div>
+          <div class="form-group">
             <label class="form-label">本文 (マークダウン風 or プレーンテキスト)</label>
             <textarea id="diary-content" class="form-textarea" required></textarea>
           </div>

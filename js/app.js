@@ -123,9 +123,6 @@ class PortfolioApp {
 
     // ページ固有の初期化
     this.onPageEnter(page);
-
-    // ページトップにスクロール
-    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   onPageEnter(page) {
@@ -462,6 +459,7 @@ class PortfolioApp {
     container.innerHTML = window.PortfolioData.diary
       .map((entry, index) => `
         <div class="diary-card stagger-item" onclick="window.portfolioApp.openDiaryModal(${index})">
+          ${entry.image ? `<div class="diary-card-image" style="background-image: url('${entry.image}'); height: 150px; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 1rem;"></div>` : ''}
           <div class="diary-card-date">${entry.date}</div>
           <h3 class="diary-card-title">${entry.title}</h3>
           <p class="diary-card-excerpt">${entry.content.substring(0, 80)}...</p>
@@ -478,7 +476,9 @@ class PortfolioApp {
     
     document.getElementById("diary-modal-title").textContent = entry.title;
     document.getElementById("diary-modal-date").textContent = entry.date;
-    document.getElementById("diary-modal-body").innerHTML = entry.content.replace(/\n/g, '<br>');
+    
+    const imgHtml = entry.image ? `<img src="${entry.image}" alt="Diary Image" style="max-width: 100%; border-radius: var(--radius-md); margin-bottom: 1rem;" /><br>` : "";
+    document.getElementById("diary-modal-body").innerHTML = imgHtml + entry.content.replace(/\n/g, '<br>');
     
     document.getElementById("diary-modal").classList.add("active");
   }

@@ -59,6 +59,12 @@
       e.preventDefault();
       saveProfile();
     });
+
+    // 日記画像アップロード
+    const diaryImageFile = document.getElementById("diary-image-file");
+    if (diaryImageFile) {
+      diaryImageFile.addEventListener("change", handleDiaryImageUpload);
+    }
   }
 
   async function handleLogin(e) {
@@ -478,9 +484,46 @@
       const d = appData.diary[index];
       document.getElementById("diary-title").value = d.title || "";
       document.getElementById("diary-date").value = d.date || "";
+      document.getElementById("diary-image").value = d.image || "";
       document.getElementById("diary-content").value = d.content || "";
     }
     modal.classList.add("open");
+  }
+
+  function handleDiaryImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const img = new Image();
+      img.onload = function() {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+        document.getElementById("diary-image").value = dataUrl;
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
   }
 
   function saveDiary() {
@@ -490,6 +533,7 @@
     // バリデーション
     const title = document.getElementById("diary-title").value.trim();
     const date = document.getElementById("diary-date").value;
+    const image = document.getElementById("diary-image").value.trim();
     const content = document.getElementById("diary-content").value.trim();
     if (!title || !date || !content) {
       showToast("すべての項目を入力してください", "error");
@@ -500,6 +544,7 @@
       id: index === -1 ? `diary-${Date.now()}` : appData.diary[index].id,
       title: title,
       date: date,
+      image: image,
       content: content
     };
 

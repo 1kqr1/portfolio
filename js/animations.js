@@ -159,6 +159,7 @@ class AnimationManager {
     if (inElement) {
       inElement.classList.add("active");
     }
+    window.scrollTo(0, 0);
 
     // 3. カーテンをさらに上へ引き抜く (Slide out)
     transitionLayer.classList.add("slide-out");
