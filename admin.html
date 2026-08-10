@@ -34,16 +34,20 @@
   <div class="dashboard" id="dashboard">
     <header class="admin-header">
       <h2>Portfolio Dashboard</h2>
-      <div style="display:flex; gap:10px;">
+      <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
         <button class="btn btn-outline" id="btn-undo" style="display:none;" onclick="AdminApp.undo()">🔙 元に戻す (Undo)</button>
         <button class="btn btn-outline" id="btn-preview">👀 プレビュー</button>
-        <button class="btn btn-primary" id="btn-export">📥 データ保存 (.json)</button>
-        <button class="btn btn-outline" id="btn-import">📤 データ読込</button>
-        <button class="btn btn-danger" id="btn-reset">⚠️ リセット</button>
         <button class="btn btn-primary" id="btn-export-js">🚀 公開用データ出力</button>
         <button class="btn btn-outline" id="btn-logout">ログアウト</button>
       </div>
     </header>
+
+    <!-- バックアップ関連（頻度の低い操作はここにまとめる） -->
+    <div class="toolbar">
+      <button class="btn" id="btn-export">📥 バックアップ保存 (.json)</button>
+      <button class="btn" id="btn-import">📤 バックアップ読込</button>
+      <button class="btn btn-danger" id="btn-reset">⚠️ 初期データにリセット</button>
+    </div>
 
     <!-- タブナビゲーション -->
     <div class="tabs">
@@ -129,8 +133,8 @@
 
     <!-- タブコンテンツ: スキル -->
     <div class="tab-content" id="tab-skills">
-      <div class="admin-header" style="margin-top:-20px; margin-bottom:20px; border:none; padding:0;">
-        <h2 style="font-size: 1.2rem;">スキル管理</h2>
+      <div class="tab-section-header">
+        <h2>スキル管理</h2>
         <button class="btn btn-primary btn-sm" onclick="AdminApp.addSkillCategory()">＋ カテゴリを追加</button>
       </div>
       <p style="color:var(--text-soft); font-size:13px; margin-bottom:16px;">各カテゴリのアイコン、カテゴリ名、スキル項目（カンマ区切り）を編集できます。</p>
@@ -144,8 +148,8 @@
 
     <!-- タブコンテンツ: 日記 -->
     <div class="tab-content" id="tab-diary">
-      <div class="admin-header" style="margin-top:-20px; margin-bottom:20px; border:none; padding:0;">
-        <h2 style="font-size: 1.2rem;">日記管理</h2>
+      <div class="tab-section-header">
+        <h2>日記管理</h2>
         <button class="btn btn-primary btn-sm" onclick="AdminApp.openDiaryModal(-1)">＋ 新規追加</button>
       </div>
       <div class="item-list" id="list-diary">
@@ -189,9 +193,10 @@
             <input type="text" id="proj-github" class="form-input" placeholder="https://github.com/..." />
           </div>
           <div class="form-group">
-            <label class="form-label">サムネイル画像パス（任意）</label>
+            <label class="form-label">サムネイル画像（ファイル選択 または パス）</label>
+            <input type="file" id="proj-image-file" class="form-input" accept="image/*" style="margin-bottom: 0.5rem;" />
             <input type="text" id="proj-image" class="form-input" placeholder="images/example.png" />
-            <p class="form-hint">空欄なら公開URLから自動でプレビュー画像を生成します。画像は事前に images/ フォルダに置いてください。</p>
+            <p class="form-hint">ファイルを選ぶとその場で埋め込まれます。空欄なら公開URLから自動でプレビュー画像を生成します。</p>
           </div>
           <div class="form-group proj-image-options">
             <label class="form-check">

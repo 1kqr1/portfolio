@@ -129,7 +129,11 @@ textarea:focus-visible,
   background: rgba(var(--accent-rgb), 0.4);
 }
 
-/* ----- Navbar ----- */
+/* ----- Navbar -----
+   注意: backdrop-filter は .navbar 自身ではなく ::before に持たせている。
+   .navbar に直接付けると、子要素の position:fixed（モバイルメニュー等）の
+   基準がビューポートではなく .navbar 自身になってしまい、
+   フルスクリーン表示ができなくなる（実際に発生していた不具合）。 */
 .navbar {
   position: fixed;
   top: 0;
@@ -138,14 +142,25 @@ textarea:focus-visible,
   height: var(--nav-height);
   z-index: 1000;
   transition: var(--transition-base);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  background: rgba(10, 10, 11, 0.8);
   border-bottom: 1px solid var(--border-color);
 }
 
-.navbar.scrolled {
+.navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 11, 0.8);
+  transition: var(--transition-base);
+}
+
+.navbar.scrolled::before {
   background: rgba(10, 10, 11, 0.95);
+}
+
+.navbar.scrolled {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
@@ -260,9 +275,14 @@ textarea:focus-visible,
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ----- Pages ----- */
+/* ----- Pages -----
+   :not(.active) で確実に隠す（.hero 等の単一クラスセレクタに
+   display の指定を上書きされないよう、詳細度を上げておく） */
+.page:not(.active) {
+  display: none !important;
+}
+
 .page {
-  display: none;
   flex-grow: 1;
   padding-top: var(--nav-height);
   position: relative;
@@ -1241,8 +1261,8 @@ textarea:focus-visible,
 /* ----- Scroll Reveal Animation ----- */
 .reveal-on-scroll {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .reveal-on-scroll.revealed {
@@ -1252,8 +1272,8 @@ textarea:focus-visible,
 
 .stagger-item {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(14px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .stagger-item.revealed {
@@ -1414,10 +1434,12 @@ textarea:focus-visible,
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
-/* 2. カスタムカーソル */
+/* 2. カスタムカーソル
+   JSが正常に初期化できた場合だけ body.cursor-ready を付与してネイティブカーソルを消す。
+   JSエラーや読み込み失敗時にカーソルが完全に見えなくなる事故を防ぐ。 */
 @media (pointer: fine) {
-  body {
-    cursor: none; /* デフォルトカーソル非表示 */
+  body.cursor-ready {
+    cursor: none;
   }
   .custom-cursor {
     position: fixed;
@@ -1429,7 +1451,11 @@ textarea:focus-visible,
     z-index: 10000;
     transform: translate(-50%, -50%);
     mix-blend-mode: difference;
-    transition: width 0.2s, height 0.2s, background 0.2s;
+    opacity: 0;
+    transition: width 0.2s, height 0.2s, background 0.2s, opacity 0.2s;
+  }
+  .custom-cursor.visible {
+    opacity: 1;
   }
   .custom-cursor.hover {
     width: 60px; height: 60px;
@@ -1496,16 +1522,19 @@ textarea:focus-visible,
   100% { clip-path: polygon(0 70%, 100% 70%, 100% 80%, 0 80%); }
 }
 
-/* 4. Marquee (背景巨大文字) */
+/* 4. Marquee (背景巨大文字) — 本文と重ならないよう名前の背後だけに留める */
 .hero-marquee {
   position: absolute;
-  top: 50%; left: 0;
+  top: 28%;
+  left: 0;
   width: 100%;
   transform: translateY(-50%);
   overflow: hidden;
   z-index: 0;
-  opacity: 0.15;
+  opacity: 0.07;
   pointer-events: none;
+  mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, #000 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 100% at 50% 50%, #000 40%, transparent 85%);
 }
 .marquee-track {
   display: flex;
@@ -1514,7 +1543,7 @@ textarea:focus-visible,
 }
 .marquee-track span {
   font-family: var(--font-heading);
-  font-size: clamp(6rem, 15vw, 12rem);
+  font-size: clamp(5rem, 12vw, 9rem);
   font-weight: 800;
   color: transparent;
   -webkit-text-stroke: 2px var(--text-primary);
@@ -1559,15 +1588,16 @@ textarea:focus-visible,
   letter-spacing: 2px;
 }
 
-/* 2. Page Transition (Wipe) */
+/* 2. Page Transition (Wipe) — 暗い面を使い、明るいフラッシュにならないようにする */
 .page-transition {
   position: fixed;
   top: 100%; left: 0; right: 0;
   height: 100vh;
-  background: var(--accent);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
   z-index: 10500;
   pointer-events: none;
-  transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+  transition: transform 0.45s cubic-bezier(0.77, 0, 0.175, 1);
 }
 .page-transition.slide-in {
   transform: translateY(-100%);

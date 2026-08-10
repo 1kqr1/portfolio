@@ -207,11 +207,23 @@ class PortfolioApp {
 
   setupAdvancedEffects() {
     const cursor = document.getElementById("custom-cursor");
-    if (cursor) {
-      window.addEventListener("mousemove", (e) => {
-        cursor.style.left = e.clientX + "px";
-        cursor.style.top = e.clientY + "px";
-      });
+    if (cursor && !this.reduceMotion) {
+      // マウスが動いたのを確認できて初めてネイティブカーソルを消す
+      // （JSが失敗した場合に誰もカーソルを見られなくなる事故を防ぐ）
+      window.addEventListener(
+        "mousemove",
+        (e) => {
+          document.body.classList.add("cursor-ready");
+          cursor.classList.add("visible");
+          cursor.style.left = e.clientX + "px";
+          cursor.style.top = e.clientY + "px";
+        },
+        { passive: true }
+      );
+      // 画面外にマウスが出たら消す（端に張り付いたままにしない）
+      document.addEventListener("mouseleave", () => cursor.classList.remove("visible"));
+      window.addEventListener("blur", () => cursor.classList.remove("visible"));
+
       const hoverTargets = document.querySelectorAll("a, button, .project-card, .skill-category");
       hoverTargets.forEach((target) => {
         target.addEventListener("mouseenter", () => cursor.classList.add("hover"));
@@ -222,6 +234,9 @@ class PortfolioApp {
     const updateSpotlight = () => {
       const cards = document.querySelectorAll(".project-card, .skill-category");
       cards.forEach((card) => {
+        // 二重登録防止（renderProjects/renderSkills/renderDiary から都度呼ばれるため）
+        if (card.dataset.spotlightBound) return;
+        card.dataset.spotlightBound = "1";
         card.addEventListener("mousemove", (e) => {
           const rect = card.getBoundingClientRect();
           const x = e.clientX - rect.left;

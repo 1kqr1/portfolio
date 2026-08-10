@@ -228,6 +228,20 @@ h1, h2, h3, .modal-title {
   flex-wrap: wrap;
 }
 
+/* タブ内の小見出し（admin-headerとは別物。stickyにしない） */
+.tab-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tab-section-header h2 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
 /* タブ */
 .tabs {
   display: flex;

@@ -49,11 +49,6 @@
         <span class="logo-text">1kqr1</span>
         <span class="logo-bracket">/&gt;</span>
       </a>
-      
-      <!-- 右端に常に表示するAdminボタン -->
-      <div style="margin-left: auto; display: flex; align-items: center; margin-right: 15px;">
-        <a href="admin.html" class="btn btn-outline" style="padding: 4px 10px; font-size: 0.85em;">Admin</a>
-      </div>
 
       <ul class="nav-links" id="nav-links">
         <li><a href="#home" class="nav-link active" data-page="home">ホーム</a></li>
@@ -90,28 +85,26 @@
       <div class="hero-content reveal-on-scroll">
         <p class="hero-greeting">Hello, I'm</p>
         <h1 class="hero-name glitch" data-text="1kqr1" id="hero-name-target">1kqr1</h1>
-        <h2 class="hero-tagline" id="hero-tagline-target">Front-end Developer</h2>
-          <div class="hero-tagline">
-            <span id="typing-text"></span>
-            <span class="typing-cursor">|</span>
-          </div>
-          <p class="hero-description">
-            Webアプリケーションを中心に、クリエイティブなデジタル体験を創り出しています。
-          </p>
-          <div class="hero-cta">
-            <a href="#projects" class="btn btn-primary">
-              <span>作品を見る</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </a>
-            <a href="#contact" class="btn btn-outline">
-              <span>お問い合わせ</span>
-            </a>
-          </div>
+        <div class="hero-tagline">
+          <span id="typing-text"></span>
+          <span class="typing-cursor">|</span>
         </div>
-        <div class="hero-visual">
-          <div class="hero-orb"></div>
-          <div class="hero-orb hero-orb-2"></div>
+        <p class="hero-description">
+          Webアプリケーションを中心に、クリエイティブなデジタル体験を創り出しています。
+        </p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary">
+            <span>作品を見る</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-outline">
+            <span>お問い合わせ</span>
+          </a>
         </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-orb"></div>
+        <div class="hero-orb hero-orb-2"></div>
       </div>
       <!-- スクロールインジケーター -->
       <div class="scroll-indicator">
@@ -186,7 +179,7 @@
           <h2 class="section-title">開発の<span class="neon-text">記録と日常</span></h2>
         </div>
         <!-- 日記一覧 -->
-        <div id="diary-container" class="diary-grid">
+        <div id="diary-container" class="diary-grid reveal-on-scroll">
           <!-- 日記カードがJSで挿入されます -->
         </div>
       </div>

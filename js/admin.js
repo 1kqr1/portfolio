@@ -42,6 +42,10 @@
         document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
         e.target.classList.add("active");
         document.getElementById(e.target.dataset.tab).classList.add("active");
+        // スキルタブは入力ごとに即時反映されるため、開いた時点の状態を退避しておく
+        if (e.target.dataset.tab === "tab-skills") {
+          backupState();
+        }
       });
     });
 
@@ -63,7 +67,21 @@
     // 日記画像アップロード
     const diaryImageFile = document.getElementById("diary-image-file");
     if (diaryImageFile) {
-      diaryImageFile.addEventListener("change", handleDiaryImageUpload);
+      diaryImageFile.addEventListener("change", (e) => {
+        handleImageUpload(e, (dataUrl) => {
+          document.getElementById("diary-image").value = dataUrl;
+        });
+      });
+    }
+
+    // 作品サムネイル画像アップロード
+    const projImageFile = document.getElementById("proj-image-file");
+    if (projImageFile) {
+      projImageFile.addEventListener("change", (e) => {
+        handleImageUpload(e, (dataUrl) => {
+          document.getElementById("proj-image").value = dataUrl;
+        });
+      });
     }
   }
 
@@ -124,6 +142,7 @@
   }
 
   function saveProfile() {
+    backupState();
     appData.profile.name = document.getElementById("prof-name").value;
     appData.profile.realName = document.getElementById("prof-realname").value;
     appData.profile.tagline = document.getElementById("prof-tagline").value;
@@ -189,6 +208,7 @@
   }
 
   function saveProject() {
+    backupState();
     const index = parseInt(document.getElementById("proj-index").value);
     const imagePath = document.getElementById("proj-image").value.trim();
     const proj = {
@@ -216,6 +236,7 @@
 
   function deleteProject(index) {
     if (confirm(`「${appData.projects[index].title}」を削除しますか？`)) {
+      backupState();
       appData.projects.splice(index, 1);
       saveData();
       renderProjects();
@@ -355,6 +376,7 @@
   }
 
   function saveExperience() {
+    backupState();
     const index = parseInt(document.getElementById("exp-index").value);
     const exp = {
       year: document.getElementById("exp-year").value,
@@ -378,6 +400,7 @@
 
   function deleteExperience(index) {
     if (confirm(`経歴「${appData.experience[index].title}」を削除しますか？`)) {
+      backupState();
       appData.experience.splice(index, 1);
       saveData();
       renderExperience();
@@ -432,6 +455,7 @@
 
   function removeSkillCategory(index) {
     if (confirm("このカテゴリを削除しますか？")) {
+      backupState();
       appData.skills.splice(index, 1);
       renderSkills();
     }
@@ -490,13 +514,16 @@
     modal.classList.add("open");
   }
 
-  function handleDiaryImageUpload(e) {
+  // 画像ファイルを縮小してdataURL化する共通処理（日記・作品サムネイルで共用）
+  // 注意: base64で直接埋め込む方式のため、枚数が増えるとdata.js自体が肥大化する。
+  // 手数はかかるが images/ フォルダに置いてパス指定する方法の方がサイト全体は軽くなる。
+  function handleImageUpload(e, onDone) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = function(event) {
+    reader.onload = function (event) {
       const img = new Image();
-      img.onload = function() {
+      img.onload = function () {
         const canvas = document.createElement("canvas");
         const MAX_WIDTH = 800;
         const MAX_HEIGHT = 800;
@@ -519,7 +546,8 @@
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
         const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
-        document.getElementById("diary-image").value = dataUrl;
+        onDone(dataUrl);
+        showToast("画像を埋め込みました（サイトを軽くしたい場合は images/ フォルダ運用がおすすめです）", "info");
       };
       img.src = event.target.result;
     };
@@ -527,6 +555,7 @@
   }
 
   function saveDiary() {
+    backupState();
     if (!appData.diary) appData.diary = [];
     const index = parseInt(document.getElementById("diary-index").value);
     
@@ -566,6 +595,7 @@
 
   function deleteDiary(index) {
     if (confirm(`「${appData.diary[index].title}」を削除しますか？`)) {
+      backupState();
       appData.diary.splice(index, 1);
       saveData();
       renderDiaryList();
@@ -574,8 +604,12 @@
   }
 
   // ===== ユーティリティ =====
-  function saveData() {
+  // 変更を加える"前"の状態を退避しておく（Undoで正しく復元するため）
+  function backupState() {
     localStorage.setItem("portfolio_backup", JSON.stringify(appData));
+  }
+
+  function saveData() {
     document.getElementById("btn-undo").style.display = "block";
     PortfolioStorage.saveData(appData);
   }

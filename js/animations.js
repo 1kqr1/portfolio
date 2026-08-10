@@ -68,7 +68,7 @@ class AnimationManager {
           // スタガーアニメーション（子要素の順番遅延）
           const staggerItems = entry.target.querySelectorAll(".stagger-item");
           staggerItems.forEach((item, index) => {
-            item.style.transitionDelay = `${index * 100}ms`;
+            item.style.transitionDelay = `${index * 60}ms`;
             item.classList.add("revealed");
           });
         }
@@ -150,7 +150,7 @@ class AnimationManager {
 
     // 1. カーテンを引き上げる (Slide in)
     transitionLayer.classList.add("slide-in");
-    await this.wait(400); // カーテンが画面を覆うのを待つ
+    await this.wait(300); // カーテンが画面を覆うのを待つ
 
     // 2. DOM要素の切り替え（裏側で）
     if (outElement) {
@@ -163,7 +163,7 @@ class AnimationManager {
 
     // 3. カーテンをさらに上へ引き抜く (Slide out)
     transitionLayer.classList.add("slide-out");
-    await this.wait(600); // 抜けきるのを待つ
+    await this.wait(400); // 抜けきるのを待つ
 
     // 4. クリーンアップ（位置リセット）
     transitionLayer.style.transition = "none";
