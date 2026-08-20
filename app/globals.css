@@ -1,0 +1,412 @@
+/* ============================================================
+   globals.css — docs/design.md で確定したトークンと基本スタイル
+   ============================================================ */
+
+:root {
+  /* ----- 色（5色。docs/design.md 1章） -----
+     signal-warm は「結果の数値」が実在しないため削除済み。増やさない。 */
+  --paper: #edeeea;
+  --ink: #1c1e1d;
+  --ink-soft: #63665f;
+  --line: #d8d9d3;
+  --signal: #2b4c7e;
+
+  /* ----- 角丸（3値。docs/design.md 2-3章） -----
+     ここに無い値は使わない。 */
+  --r-sheet: 0;      /* 紙に見せるスクリーンショット。実物の紙は角が丸くない */
+  --r-tag: 3px;      /* 技術タグ。0にすると罫線だらけの新聞風に寄るため最小限の丸み */
+  --r-action: 6px;   /* 押せる要素だけ。周囲の静的な要素と触覚的に区別する */
+
+  /* ----- 書体 -----
+     --font-*-loaded は next/font がビルド時に注入する（app/layout.tsx）。
+     フォント読み込み前・失敗時は後段のフォールバックで表示される。 */
+  --font-display: var(--font-display-loaded), 'Yu Mincho', 'YuMincho',
+    'Hiragino Mincho ProN', serif;
+  /* 本文は追加ダウンロード0KB。閲覧者はWindowsが多い前提で、
+     游ゴシックの細さを避けるため BIZ UDPGothic を先に置く（docs/design.md 2-2章）。 */
+  --font-body:
+    'Hiragino Sans', 'BIZ UDPGothic', 'Yu Gothic UI', 'YuGothic', 'Yu Gothic',
+    'Meiryo', sans-serif;
+  --font-mono: var(--font-mono-loaded), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+
+  /* ----- 行間 -----
+     明朝は行ボックスが約45%高い（実測）ため、見出しと本文で別々に持つ。 */
+  --lh-display: 1.45;
+  --lh-body: 1.9;
+
+  /* ----- 余白 ----- */
+  --gutter: clamp(1.25rem, 5vw, 3rem);
+  --measure: 34em; /* 本文1行の最大幅 */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* 游ゴシックはヒラギノより小さく見える（実測）ため、
+     游ゴシック側で適正になるサイズを基準にする。 */
+  font-size: 17px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: var(--lh-body);
+  /* 和文で負の字送りは使わない（漢字が窮屈になる） */
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--lh-display);
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  max-width: var(--measure);
+}
+
+a {
+  color: var(--signal);
+  text-underline-offset: 0.25em;
+}
+
+/* キーボード操作時にフォーカスが必ず見えるようにする */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================================
+   レイアウト
+   ============================================================ */
+
+.shell {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding-inline: var(--gutter);
+}
+
+/* ----- ヘッダー -----
+   スクロールで状態を変えない。scroll リスナーを一切使わないための設計判断。 */
+.masthead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.masthead__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  padding-block: 0.75rem;
+}
+
+.masthead__name {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  margin-right: auto;
+}
+
+.masthead__nav {
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.8rem;
+}
+
+.masthead__nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.masthead__nav a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+/* ----- セクション共通 ----- */
+.section {
+  padding-block: clamp(3.5rem, 9vw, 6rem);
+  border-top: 1px solid var(--line);
+}
+
+.section:first-of-type {
+  border-top: none;
+}
+
+.section__label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 2rem;
+}
+
+/* ============================================================
+   トップ（名前とポジショニング）
+   ============================================================ */
+
+.intro {
+  padding-block: clamp(4rem, 12vw, 8rem);
+}
+
+.intro__name {
+  font-size: clamp(2rem, 6vw, 3.25rem);
+}
+
+.intro__positioning {
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  margin-top: 1.5rem;
+  color: var(--ink);
+}
+
+.intro__affiliation {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin-top: 2rem;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   フラッグシップ
+   ============================================================ */
+
+.flagship__subject {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-bottom: 0.75rem;
+}
+
+.flagship__title {
+  font-size: clamp(1.5rem, 4vw, 2.15rem);
+  margin-bottom: 2.5rem;
+}
+
+.flagship__block {
+  margin-bottom: 2.5rem;
+}
+
+.flagship__heading {
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.flagship__body {
+  color: var(--ink);
+}
+
+/* 技術的判断のまとまり */
+.decisions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decisions > li + li {
+  margin-top: 2rem;
+}
+
+/* ----- シグネチャ要素 -----
+   docs/design.md 4章。完全に静止させる。
+   transition も animation も付けない。スクロールでもホバーでも動かさない。 */
+.sheet {
+  margin-block: 3.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.sheet__img {
+  display: block;
+  width: min(100%, 26rem);
+  height: auto;
+  border-radius: var(--r-sheet);
+  transform: rotate(-1.2deg);
+  box-shadow:
+    0 1px 2px rgb(28 30 29 / 12%),
+    0 12px 28px -12px rgb(28 30 29 / 28%);
+}
+
+/* ============================================================
+   その他の実績（見出しは案件名でなく課題文）
+   ============================================================ */
+
+.cases {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cases > li + li {
+  margin-top: 3.5rem;
+  padding-top: 3.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.case__problem {
+  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+  margin-bottom: 1rem;
+}
+
+.case__title {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  margin-bottom: 1rem;
+}
+
+.case__body + .case__body {
+  margin-top: 1rem;
+}
+
+/* ----- 技術タグ ----- */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--r-tag);
+  padding: 0.15rem 0.5rem;
+}
+
+/* ============================================================
+   その他の制作物
+   ============================================================ */
+
+.side-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.side-list li {
+  padding-block: 0.9rem;
+}
+
+.side-list li + li {
+  border-top: 1px solid var(--line);
+}
+
+.side-list__link {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-decoration: none;
+}
+
+.side-list__link:hover {
+  text-decoration: underline;
+}
+
+.side-list__desc {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  margin-top: 0.2rem;
+}
+
+/* ============================================================
+   私について
+   ============================================================ */
+
+.about__role {
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.about__meta {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  margin-top: 2rem;
+  letter-spacing: 0.03em;
+}
+
+/* ============================================================
+   お問い合わせ
+   ============================================================ */
+
+.contact__button {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid var(--signal);
+  border-radius: var(--r-action);
+  color: var(--signal);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.contact__button:hover {
+  background: var(--signal);
+  color: var(--paper);
+}
+
+/* ============================================================
+   フッター
+   ============================================================ */
+
+.colophon {
+  border-top: 1px solid var(--line);
+  padding-block: 2rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   モーション
+   ============================================================ */
+/* このサイトには常時ループするアニメーションもスクロール連動演出も無い。
+   残っているのはホバー時の色変化のみで、それも下記で無効化される。 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
