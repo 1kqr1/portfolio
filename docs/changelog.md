@@ -170,7 +170,7 @@ Next.js への移行を完了した直後（コミット `fcd871e`）の実測�
 
 ### 技術
 - Next.js 16 App Router / `output: 'export'`（クライアントコンポーネント0）
-- `basePath` を環境変数で切替（GitHub Pages はサブパス `/portfolio`、Cloudflare Pages はルート）
+- デプロイは Cloudflare Pages 一本（ルート配信のため `basePath` は不要）
 - 見出し明朝体を**実使用145字のサブセット**に絞り自前ホスト。CSS 98,005→7,266 B、フォント 2,690,212 B（128ファイル）→ 77,032 B（7ファイル）
 - 見出し文字がサブセットから漏れたら**ビルドを失敗させる**検証を追加（`scripts/verify-font-coverage.mjs`）
 - 画像は sharp で WebP/AVIF 生成、実寸をマニフェストに書き出して `width`/`height` に使用
@@ -179,12 +179,30 @@ Next.js への移行を完了した直後（コミット `fcd871e`）の実測�
 
 ### 8-1. デプロイ設定の変更（これをやらないと本番が壊れる）
 
-現状、GitHub Pages も Cloudflare Pages も「リポジトリのルートをそのまま配信」する設定になっている。Next.js はビルドが必要なため、**両方の設定変更が必須**。これはアカウント設定の変更なので本人が行う必要がある。
+**構成を決定: GitHub はコード管理のみ、デプロイは Cloudflare Pages に一本化する。**
 
-1. **GitHub**: リポジトリ Settings → Pages → Build and deployment → Source を「Deploy from a branch」から **「GitHub Actions」** に変更する。ワークフローは `.github/workflows/deploy.yml` にコミット済み。
-2. **Cloudflare Pages**: プロジェクト `portfolio` の設定で、ビルドコマンドに `npm run build`、出力ディレクトリに `out` を設定する（現在どちらも空欄）。
+これまで GitHub Pages（`1kqr1.github.io/portfolio/`）と Cloudflare Pages（`portfolio-8fu.pages.dev`）が同じ `main` を二重に配信していた。配信URLの階層が違う（サブパス vs ルート）ため `basePath` の切り替えが必要で、設定変更も2箇所必要だった。Cloudflare 一本にすることで:
 
-**この2つを変更する前に main へマージすると、両方のサイトが壊れる。**
+- ルート配信なので `basePath` / `assetPrefix` が不要になり、設定を削除した
+- 全ブランチで自動プレビューデプロイが効く（マージ前に実物を確認できる）
+- 独自ドメインを当てるのも容易
+
+必要な作業:
+
+1. **Cloudflare Pages**: プロジェクト `portfolio` の設定で
+   - ビルドコマンド: `npm run build`
+   - 出力ディレクトリ: `out`
+   （現在どちらも空欄。設定しないとビルドされず、ソースがそのまま配信されて壊れる）
+2. **GitHub Pages**: リポジトリ Settings → Pages で無効化する（二重配信をやめる）
+
+**この設定を変更する前に main へマージすると、Cloudflare 側が壊れる。**
+
+対応済みのコード側の変更:
+- `next.config.mjs` から `basePath` / `assetPrefix` の環境変数切替を削除
+- `.github/workflows/deploy.yml`（GitHub Pages 用）を削除
+- `.node-version` に `22` を追加（Cloudflare のビルド環境の Node を固定）
+- ビルドに必要なパッケージ（`sharp`、`typescript`、`@types/*`）を `devDependencies` から `dependencies` へ移動。Cloudflare Pages のビルドでは `NODE_ENV=production` により devDependencies が入らない場合があるため。このプロジェクトは静的サイトで実行時の依存が存在せず、両者を区別する実益が無い
+- クリーンな `npm ci` からのビルドが通ること、およびフォント取得でネットワークに出ないこと（サブセットが commit 済みのためスキップされる）を確認済み
 
 ### 8-2. 確認・判断が必要なもの
 

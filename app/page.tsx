@@ -4,9 +4,6 @@ import manifest from '@/content/image-manifest.json';
 type ImageEntry = { webp: string; avif: string; width: number; height: number };
 const images = manifest as Record<string, ImageEntry>;
 
-// 静的エクスポートのため basePath はビルド時に埋め込む
-const base = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
-
 function Tags({ items }: { items: readonly string[] }) {
   return (
     <ul className="tags">
@@ -58,11 +55,11 @@ export default function Home() {
           {shot && (
             <div className="sheet">
               <picture>
-                <source srcSet={`${base}${shot.avif}`} type="image/avif" />
-                <source srcSet={`${base}${shot.webp}`} type="image/webp" />
+                <source srcSet={shot.avif} type="image/avif" />
+                <source srcSet={shot.webp} type="image/webp" />
                 <img
                   className="sheet__img"
-                  src={`${base}${shot.webp}`}
+                  src={shot.webp}
                   width={shot.width}
                   height={shot.height}
                   alt={flagship.screenshot.alt}
