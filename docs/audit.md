@@ -38,7 +38,7 @@ js/admin.js           管理画面ロジック
 ### デプロイの実態（GitHub Pages / Cloudflare Pages 両方に出ている）
 
 - **GitHub Pages**: `build_type: "legacy"`（GitHub Actions ではなく、`main` ブランチのルートを直接静的配信）。公開URL: `https://1kqr1.github.io/portfolio/`
-- **Cloudflare Pages**: プロジェクト名 `portfolio`、Git 連携あり、`portfolio-8fu.pages.dev` で公開中。ビルドコマンド等の詳細は今回未確認（後述）。
+- **Cloudflare Pages**: プロジェクト名 `portfolio`、Git 連携あり、`portfolio-8fu.pages.dev` で公開中。追加確認済み: `build_command` / `destination_dir` / `root_dir` はすべて空欄 = **ビルドステップなしでリポジトリルートをそのまま静的配信**（GitHub Pagesと全く同じ挙動）。`production_branch: main`、プレビューデプロイが全ブランチ（`preview_branch_includes: ["*"]`）で有効なため、**このブランチ（`redesign/portfolio-v2`）をpushすると自動でプレビューURLが発行される**（フェーズ4/5のレビューに使える）。
 
 つまり「`output: 'export'` で static export」という前提そのものが存在せず、確認するまでもなく**最初から100%静的ファイル**です。
 
@@ -187,10 +187,12 @@ GitHub Pages / Cloudflare Pages 側で配信時にgzip/brotli圧縮はかかる�
 
 ---
 
-## まとめ：フェーズ2に進む前に確認したいこと
+## まとめ：確認結果と方針決定（2026-08-20 回答済み）
 
-1. **【最重要】スタックの前提について**: このリポジトリ（素のHTML/CSS/JS、GitHub Pages + Cloudflare Pages両方で公開中）を対象に、①デザイン・情報設計だけ作り直す（Next.js化はしない）／②Next.jsへの移行も含めてゼロから作り直す／③実は別のリポジトリの話だった、のどれでしょうか？
-2. Cloudflare Pages側のビルド設定（ビルドコマンド・出力ディレクトリ）は今回未確認です（作業中にCloudflareの認証トークンが期限切れになり、再認証できませんでした）。GitHub Pagesを正とし、Cloudflare Pagesはミラーとして扱う認識で合っていますか？
-3. 9件のプロジェクトで使っている `thum.io` の自動スクリーンショットについて、今後も使い続けますか、それとも全件手動スクショに切り替えますか（後者の場合、10枚分のスクショ素材が別途必要になります）。
+フェーズ1報告後に本人から回答をもらい、以下の方針で確定した。
 
-この報告への回答をいただき次第、フェーズ2（情報設計のヒアリング）に進みます。
+1. **スタックの前提**: **Next.jsへの移行も含めてゼロから作り直す。** 現状の素のHTML/CSS/JSはあくまで叩き台。→ フェーズ2以降は「デザイン・情報設計の刷新」と「Next.js（`output: 'export'`前提）への移行」を同時に扱うスコープになる。
+2. **Cloudflare Pagesのビルド設定**: 再認証の上で確認済み（上記セクションに追記）。GitHub Pages・Cloudflare Pagesとも「ビルドなし・リポジトリルート直配信」で完全に同一挙動。Next.js移行後は両方とも `out/` 相当の静的出力を配信する設定に変更が必要になる（フェーズ4で対応）。
+3. **thum.io自動スクショ**: 引き続き使用する。→ フェーズ4の「サードパーティスクリプト原則不使用」方針とは矛盾するが、運用上の判断として許容する。画像最適化（WebP/AVIF変換）は自前の1枚（tsumugi-shift.png）のみが対象になる。
+
+→ 上記を反映し、フェーズ2（情報設計のヒアリング）に進む。
