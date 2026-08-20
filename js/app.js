@@ -210,13 +210,19 @@ class PortfolioApp {
     if (cursor && !this.reduceMotion) {
       // マウスが動いたのを確認できて初めてネイティブカーソルを消す
       // （JSが失敗した場合に誰もカーソルを見られなくなる事故を防ぐ）
+      let cursorFrame = null;
       window.addEventListener(
         "mousemove",
         (e) => {
           document.body.classList.add("cursor-ready");
           cursor.classList.add("visible");
-          cursor.style.left = e.clientX + "px";
-          cursor.style.top = e.clientY + "px";
+          const x = e.clientX;
+          const y = e.clientY;
+          if (cursorFrame) return; // 1フレームにつき最大1回だけ更新（top/leftではなくtransformでレイアウト計算を回避）
+          cursorFrame = requestAnimationFrame(() => {
+            cursorFrame = null;
+            cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+          });
         },
         { passive: true }
       );
@@ -237,12 +243,17 @@ class PortfolioApp {
         // 二重登録防止（renderProjects/renderSkills/renderDiary から都度呼ばれるため）
         if (card.dataset.spotlightBound) return;
         card.dataset.spotlightBound = "1";
+        let spotlightFrame = null;
         card.addEventListener("mousemove", (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          card.style.setProperty("--mouse-x", `${x}px`);
-          card.style.setProperty("--mouse-y", `${y}px`);
+          const clientX = e.clientX;
+          const clientY = e.clientY;
+          if (spotlightFrame) return; // 1フレームにつき最大1回だけ更新
+          spotlightFrame = requestAnimationFrame(() => {
+            spotlightFrame = null;
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty("--mouse-x", `${clientX - rect.left}px`);
+            card.style.setProperty("--mouse-y", `${clientY - rect.top}px`);
+          });
         });
       });
     };

@@ -89,19 +89,31 @@ class AnimationManager {
       if (card.dataset.tiltBound) return;
       card.dataset.tiltBound = "1";
 
-      card.addEventListener("mousemove", (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = ((y - centerY) / centerY) * -8;
-        const rotateY = ((x - centerX) / centerX) * 8;
+      let tiltFrame = null;
 
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      card.addEventListener("mousemove", (e) => {
+        const clientX = e.clientX;
+        const clientY = e.clientY;
+        if (tiltFrame) return; // 1フレームにつき最大1回だけ更新
+        tiltFrame = requestAnimationFrame(() => {
+          tiltFrame = null;
+          const rect = card.getBoundingClientRect();
+          const x = clientX - rect.left;
+          const y = clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -8;
+          const rotateY = ((x - centerX) / centerX) * 8;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
       });
 
       card.addEventListener("mouseleave", () => {
+        if (tiltFrame) {
+          cancelAnimationFrame(tiltFrame);
+          tiltFrame = null;
+        }
         card.style.transform =
           "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
       });
