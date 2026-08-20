@@ -56,6 +56,89 @@ const DATA = {
       githubUrl: "",
       image: null, // 公開サイトなので liveUrl から自動プレビュー表示
     },
+    {
+      id: "project-obisu-map",
+      title: "オービス情報マップ",
+      description:
+        "山口県・長崎県・大分県の速度違反自動取締装置（オービス）の設置情報を集約した地図アプリ。地図上で位置を確認しながら、安全運転に役立てられるように制作しました。",
+      tags: ["TypeScript", "GitHub Pages"],
+      liveUrl: "https://1kqr1.github.io/obisu-map/",
+      githubUrl: "https://github.com/1kqr1/obisu-map",
+      image: null,
+    },
+    {
+      id: "project-dcc-portal",
+      title: "DCCポータル",
+      description:
+        "DCCコミュニティのメンバー向けポートフォリオ管理システム。DCC Login（OIDC）と連携し、メンバー各自が自分の作品や自己紹介を編集・公開できます。",
+      tags: ["TypeScript", "Hono", "Cloudflare Workers", "D1", "OIDC"],
+      liveUrl: "https://dcc-portal.s1kqr1s.workers.dev",
+      githubUrl: "",
+      image: null,
+      preview: false, // ログインが必要なため自動プレビューは停止
+    },
+    {
+      id: "project-menu-app",
+      title: "献立アプリ",
+      description:
+        "1週間分の夜の献立を自動生成するアプリ。「今日何作ろう」という日々の悩みを解消するために制作しました。",
+      tags: ["Next.js", "Cloudflare Pages", "D1"],
+      liveUrl: "https://menu-app-c6a.pages.dev",
+      githubUrl: "",
+      image: null,
+    },
+    {
+      id: "project-trinook",
+      title: "triNook",
+      description:
+        "友人同士で勉強時間を記録・共有するタイムラプス学習管理アプリ。専用アカウントでログインし、学習の継続をモチベーションに変えます。",
+      tags: ["React", "Vite", "Cloudflare Pages", "Cloudflare Workers"],
+      liveUrl: "https://study-timelapse.pages.dev",
+      githubUrl: "",
+      image: null,
+      preview: false, // ログイン（ユーザー選択）画面のため自動プレビューは停止
+    },
+    {
+      id: "project-focus-flight",
+      title: "Focus Flight",
+      description:
+        "集中セッションを「フライトの予約」に見立てたゲーミフィケーション型フォーカスタイマー。マイルや訪れた都市数、連続記録が貯まっていく仕組みで、集中の継続を楽しく可視化します。",
+      tags: ["React", "Vite", "PWA", "Cloudflare Pages"],
+      liveUrl: "https://focus-flight.pages.dev",
+      githubUrl: "",
+      image: null,
+    },
+    {
+      id: "project-nurimichi",
+      title: "ヌリミチ",
+      description:
+        "走った道が地図上で塗りつぶされていくランニング記録アプリ。GPSで走行ルートをリアルタイムに描画し、距離やペースを記録。データは端末内に保存され、書き出し・読み込みにも対応しています。",
+      tags: ["JavaScript", "MapLibre GL JS", "Geolocation API", "Cloudflare Workers"],
+      liveUrl: "https://nurimichi.s1kqr1s.workers.dev",
+      githubUrl: "",
+      image: null,
+    },
+    {
+      id: "project-roomshare-receipts",
+      title: "共同生活費レシート管理",
+      description:
+        "ルームシェアの共同生活費を管理するアプリ。レシートを撮影してアップロードするだけでAIが店名・日付・金額・品目を自動で読み取り、割り勘の記録を簡単にします。",
+      tags: ["React", "Vite", "Cloudflare Workers", "D1", "Workers AI"],
+      liveUrl: "https://roomshare-receipts.s1kqr1s.workers.dev",
+      githubUrl: "",
+      image: null,
+    },
+    {
+      id: "project-intern-system",
+      title: "インターン向け勤怠・タスク管理システム",
+      description:
+        "とある金融機関のインターンシップ向けに開発した、勤怠（出勤表）管理と社内タスク掲示板の2つのWebアプリ。紙やExcelでの管理をデジタル化し、インターン生・運営側双方の業務負担を軽減しました（守秘義務のためライブリンクは非公開）。",
+      tags: ["React", "TypeScript", "Cloudflare Workers", "D1"],
+      liveUrl: "",
+      githubUrl: "",
+      image: null,
+      preview: false,
+    },
     // ▼ 実物ができたら、この形式でコピーして増やせます
     // {
     //   id: "project-xxx",
