@@ -177,7 +177,7 @@ Next.js への移行を完了した直後（コミット `fcd871e`）の実測�
 
 ## 8. 残っている作業（本人の対応が必要）
 
-### 8-1. デプロイ設定の変更（これをやらないと本番が壊れる）
+### 8-1. デプロイ設定 — **対応済み**
 
 **構成を決定: GitHub はコード管理のみ、デプロイは Cloudflare Pages に一本化する。**
 
@@ -187,15 +187,48 @@ Next.js への移行を完了した直後（コミット `fcd871e`）の実測�
 - 全ブランチで自動プレビューデプロイが効く（マージ前に実物を確認できる）
 - 独自ドメインを当てるのも容易
 
-必要な作業:
+### 設定作業（2026-08-20 実施済み）
 
-1. **Cloudflare Pages**: プロジェクト `portfolio` の設定で
+1. **Cloudflare Pages**: プロジェクト `portfolio` に以下を設定した（APIで変更済み）
    - ビルドコマンド: `npm run build`
    - 出力ディレクトリ: `out`
-   （現在どちらも空欄。設定しないとビルドされず、ソースがそのまま配信されて壊れる）
-2. **GitHub Pages**: リポジトリ Settings → Pages で無効化する（二重配信をやめる）
+   - 環境変数 `NODE_VERSION=22`（production / preview 両方）
+2. **GitHub Pages**: 無効化した。`https://1kqr1.github.io/portfolio/` は 404 になっている（履歴書等には未掲載であることを確認済み）
 
-**この設定を変更する前に main へマージすると、Cloudflare 側が壊れる。**
+### 実環境での検証結果
+
+ブランチ `redesign/portfolio-v2` を push し、Cloudflare のプレビュービルドで実際に検証した:
+
+- ビルド全ステージ成功（queued → initialize → clone_repo → build → deploy すべて success）
+- プレビューURL: `https://3700221c.portfolio-8fu.pages.dev`
+- 配信されたHTMLの `<script>` タグ: **0個**（ビルド後の除去処理がCloudflare上でも正しく動作）
+- 全アセットが 200、AVIF画像も配信されている
+
+**Cloudflare実環境でのLighthouse（モバイル）:**
+
+| | 結果 |
+|---|---|
+| Performance | **100** |
+| Accessibility | **100** |
+| Best Practices | **100** |
+| SEO | 66 → **プレビュー環境固有の値**（下記） |
+| LCP | 1,809 ms |
+| CLS | 0 |
+| FCP | 909 ms |
+| TBT | 0 ms |
+| 総転送量 | 89 KiB |
+
+> SEO が 66 なのは「Page is blocked from indexing」による。これは **Cloudflare がプレビューデプロイに自動で付与する `x-robots-tag: noindex`** が原因で、本番URL（`portfolio-8fu.pages.dev`）には付いておらず、HTML内にも noindex は無いことを確認済み。本番では 100 になる。
+
+### 現在の状態
+
+| URL | 状態 |
+|---|---|
+| `portfolio-8fu.pages.dev`（本番） | **旧サイトのまま**（main が未マージのため） |
+| `3700221c.portfolio-8fu.pages.dev`（プレビュー） | 新サイト |
+| `1kqr1.github.io/portfolio/` | 404（無効化済み） |
+
+本番へ反映するには `redesign/portfolio-v2` を `main` にマージする。Cloudflare 側の設定は完了しているので、マージすれば自動でビルド・デプロイされる。
 
 対応済みのコード側の変更:
 - `next.config.mjs` から `basePath` / `assetPrefix` の環境変数切替を削除
