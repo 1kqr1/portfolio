@@ -1,4 +1,10 @@
 {
+  "/images/dcc-portal": {
+    "webp": "/images/dcc-portal.webp",
+    "avif": "/images/dcc-portal.avif",
+    "width": 1280,
+    "height": 420
+  },
   "/images/tsumugi-shift": {
     "webp": "/images/tsumugi-shift.webp",
     "avif": "/images/tsumugi-shift.avif",

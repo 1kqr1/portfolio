@@ -101,7 +101,10 @@ export const works = [
     summary: 'DCC Login（OIDC）と連携し、本人が自分のページを更新できるようにした。',
     stack: ['TypeScript', 'Hono', 'Cloudflare Workers', 'D1', 'OIDC'],
     liveUrl: 'https://dcc-portal.s1kqr1s.workers.dev',
-    screenshot: null,
+    screenshot: {
+      key: '/images/dcc-portal',
+      alt: 'DCCポータルのログイン画面。DCC Loginでのサインインを促す表示。',
+    },
     detail: {
       problem: {
         heading: '公開プロフィールの更新を、毎回運営が代行していた',
