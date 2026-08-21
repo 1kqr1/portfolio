@@ -220,22 +220,30 @@ Next.js への移行を完了した直後（コミット `fcd871e`）の実測�
 
 > SEO が 66 なのは「Page is blocked from indexing」による。これは **Cloudflare がプレビューデプロイに自動で付与する `x-robots-tag: noindex`** が原因で、本番URL（`portfolio-8fu.pages.dev`）には付いておらず、HTML内にも noindex は無いことを確認済み。本番では 100 になる。
 
-### 現在の状態
+### 公開完了（2026-08-20）
+
+`redesign/portfolio-v2` を `main` にマージし、Cloudflare Pages の本番デプロイが成功した。
 
 | URL | 状態 |
 |---|---|
-| `portfolio-8fu.pages.dev`（本番） | **旧サイトのまま**（main が未マージのため） |
-| `3700221c.portfolio-8fu.pages.dev`（プレビュー） | 新サイト |
-| `1kqr1.github.io/portfolio/` | 404（無効化済み） |
+| **`https://portfolio-8fu.pages.dev`（本番）** | **新サイト公開中** |
+| `1kqr1.github.io/portfolio/` | 404（GitHub Pages 無効化済み） |
 
-本番へ反映するには `redesign/portfolio-v2` を `main` にマージする。Cloudflare 側の設定は完了しているので、マージすれば自動でビルド・デプロイされる。
+**本番URLでの最終計測（Lighthouse モバイル）:**
 
-対応済みのコード側の変更:
-- `next.config.mjs` から `basePath` / `assetPrefix` の環境変数切替を削除
-- `.github/workflows/deploy.yml`（GitHub Pages 用）を削除
-- `.node-version` に `22` を追加（Cloudflare のビルド環境の Node を固定）
-- ビルドに必要なパッケージ（`sharp`、`typescript`、`@types/*`）を `devDependencies` から `dependencies` へ移動。Cloudflare Pages のビルドでは `NODE_ENV=production` により devDependencies が入らない場合があるため。このプロジェクトは静的サイトで実行時の依存が存在せず、両者を区別する実益が無い
-- クリーンな `npm ci` からのビルドが通ること、およびフォント取得でネットワークに出ないこと（サブセットが commit 済みのためスキップされる）を確認済み
+| | 結果 | 目標 | 判定 |
+|---|---|---|---|
+| Performance | **100** | 95以上 | 達成 |
+| Accessibility | **100** | — | — |
+| Best Practices | **100** | — | — |
+| SEO | **100** | — | — |
+| LCP | **1,822 ms** | 2,000 ms未満 | 達成 |
+| CLS | **0** | 0.1未満 | 達成 |
+| FCP | 922 ms | — | — |
+| TBT | 0 ms | — | — |
+| 総転送量 | 88 KiB | — | — |
+
+満点でない監査項目: **なし**。配信されたHTMLの `<script>` タグは 0 個、`x-robots-tag` も付いていないことを確認済み。
 
 ### 8-2. 確認・判断が必要なもの
 
