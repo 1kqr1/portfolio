@@ -294,6 +294,26 @@ img {
   list-style: none;
 }
 
+/* ----- 技術タグ ----- */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tags li {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.03em;
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--r-tag);
+  padding: 0.15rem 0.5rem;
+}
+
 /* ----- シグネチャ要素 -----
    docs/design.md 4章。完全に静止させる。
    transition も animation も付けない。スクロールでもホバーでも動かさない。 */
