@@ -1,35 +1,10 @@
-import { profile, flagship, cases, sideProjects, about, contact } from '@/content/site';
-import manifest from '@/content/image-manifest.json';
-
-type ImageEntry = { webp: string; avif: string; width: number; height: number };
-const images = manifest as Record<string, ImageEntry>;
-
-function Tags({ items }: { items: readonly string[] }) {
-  return (
-    <ul className="tags">
-      {items.map((t) => (
-        <li key={t}>{t}</li>
-      ))}
-    </ul>
-  );
-}
+import { profile, works, sideProjects, about, contact } from '@/content/site';
+import { Masthead, Colophon, Tags } from './_components';
 
 export default function Home() {
-  const shot = images['/images/tsumugi-shift'];
-
   return (
     <>
-      <header className="masthead">
-        <div className="shell masthead__inner">
-          <span className="masthead__name">{profile.name}</span>
-          <nav className="masthead__nav" aria-label="ページ内の移動">
-            <a href="#work">実績</a>
-            <a href="#side">制作物</a>
-            <a href="#about">私について</a>
-            <a href="#contact">連絡先</a>
-          </nav>
-        </div>
-      </header>
+      <Masthead />
 
       <main>
         {/* ----- 導入 ----- */}
@@ -39,86 +14,23 @@ export default function Home() {
           <p className="intro__affiliation">{profile.affiliation}</p>
         </section>
 
-        {/* ----- フラッグシップ ----- */}
-        <section className="shell section" id="work">
-          <p className="section__label">Featured</p>
-
-          <p className="flagship__subject">{flagship.subject}</p>
-          <h2 className="flagship__title">{flagship.title}</h2>
-
-          <div className="flagship__block">
-            <h3 className="flagship__heading">{flagship.problem.heading}</h3>
-            <p className="flagship__body">{flagship.problem.body}</p>
-          </div>
-
-          {/* シグネチャ要素。静止画として置くだけで、動きは一切与えない */}
-          {shot && (
-            <div className="sheet">
-              <picture>
-                <source srcSet={shot.avif} type="image/avif" />
-                <source srcSet={shot.webp} type="image/webp" />
-                <img
-                  className="sheet__img"
-                  src={shot.webp}
-                  width={shot.width}
-                  height={shot.height}
-                  alt={flagship.screenshot.alt}
-                  // 最初の画面に入る想定なので lazy にしない（LCPを遅らせないため）
-                  fetchPriority="high"
-                  decoding="async"
-                />
-              </picture>
-            </div>
-          )}
-
-          <div className="flagship__block">
-            <h3 className="flagship__heading">{flagship.approach.heading}</h3>
-            <p className="flagship__body">{flagship.approach.body}</p>
-          </div>
-
-          <ul className="decisions">
-            {flagship.decisions.map((d) => (
-              <li key={d.heading} className="flagship__block">
-                <h3 className="flagship__heading">{d.heading}</h3>
-                <p className="flagship__body">{d.body}</p>
-              </li>
-            ))}
-          </ul>
-
-          <div className="flagship__block">
-            <h3 className="flagship__heading">{flagship.result.heading}</h3>
-            <p className="flagship__body">{flagship.result.body}</p>
-          </div>
-
-          <Tags items={flagship.stack} />
-          {flagship.liveUrl && (
-            <p style={{ marginTop: '1.25rem' }}>
-              <a href={flagship.liveUrl} target="_blank" rel="noopener noreferrer">
-                紡シフトを見る
-              </a>
-            </p>
-          )}
-        </section>
-
-        {/* ----- その他の実績 ----- */}
-        <section className="shell section">
-          <p className="section__label">Work</p>
-          <ul className="cases">
-            {cases.map((c) => (
-              <li key={c.id}>
-                {/* 見出しは案件名ではなく、誰のどんな課題だったか */}
-                <h2 className="case__problem">{c.problemHeadline}</h2>
-                <p className="case__title">{c.title}</p>
-                <p className="case__body">{c.body}</p>
-                <p className="case__body">{c.outcome}</p>
-                <Tags items={c.stack} />
-                {c.liveUrl && (
-                  <p style={{ marginTop: '1.25rem' }}>
-                    <a href={c.liveUrl} target="_blank" rel="noopener noreferrer">
-                      {c.title}を見る
-                    </a>
-                  </p>
-                )}
+        {/* ----- 実績（この一覧がこのサイトの背骨） ----- */}
+        <section className="shell section" id="works">
+          <h2 className="section__label">実績</h2>
+          <ul className="work-index">
+            {works.map((w) => (
+              <li key={w.slug} className="work-index__item">
+                <a className="work-index__link" href={`/works/${w.slug}/`}>
+                  {/* 見出しは案件名ではなく、誰のどんな課題だったか */}
+                  <span className="work-index__problem">{w.problemHeadline}</span>
+                </a>
+                <p className="work-index__meta">
+                  {w.title}
+                  <span className="work-index__sep"> — </span>
+                  {w.subject}
+                </p>
+                <p className="work-index__summary">{w.summary}</p>
+                <Tags items={w.stack} />
               </li>
             ))}
           </ul>
@@ -126,7 +38,7 @@ export default function Home() {
 
         {/* ----- その他の制作物 ----- */}
         <section className="shell section" id="side">
-          <p className="section__label">Other</p>
+          <h2 className="section__label">その他の制作物</h2>
           <ul className="side-list">
             {sideProjects.map((p) => (
               <li key={p.name}>
@@ -146,32 +58,26 @@ export default function Home() {
 
         {/* ----- 私について ----- */}
         <section className="shell section" id="about">
-          <p className="section__label">About</p>
-          <h2 className="about__role">{about.internship.role}</h2>
+          <h2 className="section__label">私について</h2>
+          <h3 className="about__role">{about.internship.role}</h3>
           <p>{about.internship.body}</p>
           <p className="about__meta">{about.education}</p>
         </section>
 
         {/* ----- 連絡先 ----- */}
         <section className="shell section" id="contact">
-          <p className="section__label">Contact</p>
-          <p>お仕事のご依頼やご質問は、フォームからお送りください。</p>
-          <a
-            className="contact__button"
-            href={contact.formUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            お問い合わせフォームを開く
-          </a>
+          <h2 className="section__label">連絡先</h2>
+          <p>
+            お仕事のご依頼やご質問は、
+            <a href={contact.formUrl} target="_blank" rel="noopener noreferrer">
+              お問い合わせフォーム
+            </a>
+            からお送りください。
+          </p>
         </section>
       </main>
 
-      <footer className="colophon">
-        <div className="shell">
-          © {new Date().getFullYear()} {profile.name}
-        </div>
-      </footer>
+      <Colophon />
     </>
   );
 }
