@@ -159,10 +159,10 @@ img {
 }
 
 .section__label {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   color: var(--ink-soft);
   margin: 0 0 2rem;
 }
@@ -194,33 +194,110 @@ img {
 }
 
 /* ============================================================
-   フラッグシップ
+   実績インデックス（トップページの背骨）
    ============================================================ */
 
-.flagship__subject {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
+.work-index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-index__item + .work-index__item {
+  margin-top: 2.75rem;
+  padding-top: 2.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.work-index__link {
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.work-index__link:hover .work-index__problem {
+  text-decoration: underline;
+}
+
+/* 見出しは案件名ではなく課題文そのもの */
+.work-index__problem {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+  line-height: var(--lh-display);
+  letter-spacing: 0.03em;
+}
+
+.work-index__meta {
+  font-size: 0.8rem;
   color: var(--ink-soft);
-  margin-bottom: 0.75rem;
+  margin-top: 0.6rem;
 }
 
-.flagship__title {
-  font-size: clamp(1.5rem, 4vw, 2.15rem);
+.work-index__sep {
+  opacity: 0.5;
+}
+
+.work-index__summary {
+  margin-top: 0.5rem;
+}
+
+/* ============================================================
+   実績の個別ページ
+   ============================================================ */
+
+.work {
+  padding-block: clamp(2rem, 6vw, 3.5rem) clamp(4rem, 10vw, 6rem);
+}
+
+/* ============================================================
+   独立ページ（その他の制作物 / 私について / 連絡先）共通
+   ============================================================ */
+
+.page {
+  padding-block: clamp(3rem, 8vw, 5rem) clamp(4rem, 10vw, 6rem);
+}
+
+.page__title {
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  margin-bottom: 3rem;
+}
+
+.work__back {
+  font-size: 0.8rem;
   margin-bottom: 2.5rem;
 }
 
-.flagship__block {
+.work__back a {
+  text-decoration: none;
+}
+
+.work__back a:hover {
+  text-decoration: underline;
+}
+
+.work__subject {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 0.6rem;
+}
+
+.work__title {
+  font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+  margin-bottom: 3rem;
+}
+
+.work__block {
   margin-bottom: 2.5rem;
 }
 
-.flagship__heading {
+.work__heading {
   font-size: clamp(1.05rem, 2.4vw, 1.25rem);
   margin-bottom: 0.75rem;
 }
 
-.flagship__body {
-  color: var(--ink);
+.work__live {
+  margin-top: 1.5rem;
 }
 
 /* 技術的判断のまとまり */
@@ -228,63 +305,6 @@ img {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-.decisions > li + li {
-  margin-top: 2rem;
-}
-
-/* ----- シグネチャ要素 -----
-   docs/design.md 4章。完全に静止させる。
-   transition も animation も付けない。スクロールでもホバーでも動かさない。 */
-.sheet {
-  margin-block: 3.5rem;
-  display: flex;
-  justify-content: center;
-}
-
-.sheet__img {
-  display: block;
-  width: min(100%, 26rem);
-  height: auto;
-  border-radius: var(--r-sheet);
-  transform: rotate(-1.2deg);
-  box-shadow:
-    0 1px 2px rgb(28 30 29 / 12%),
-    0 12px 28px -12px rgb(28 30 29 / 28%);
-}
-
-/* ============================================================
-   その他の実績（見出しは案件名でなく課題文）
-   ============================================================ */
-
-.cases {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.cases > li + li {
-  margin-top: 3.5rem;
-  padding-top: 3.5rem;
-  border-top: 1px solid var(--line);
-}
-
-.case__problem {
-  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
-  margin-bottom: 1rem;
-}
-
-.case__title {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  color: var(--ink-soft);
-  margin-bottom: 1rem;
-}
-
-.case__body + .case__body {
-  margin-top: 1rem;
 }
 
 /* ----- 技術タグ ----- */
@@ -305,6 +325,26 @@ img {
   border: 1px solid var(--line);
   border-radius: var(--r-tag);
   padding: 0.15rem 0.5rem;
+}
+
+/* ----- シグネチャ要素 -----
+   docs/design.md 4章。完全に静止させる。
+   transition も animation も付けない。スクロールでもホバーでも動かさない。 */
+.sheet {
+  margin-block: 3.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.sheet__img {
+  display: block;
+  width: min(100%, 26rem);
+  height: auto;
+  border-radius: var(--r-sheet);
+  transform: rotate(-1.2deg);
+  box-shadow:
+    0 1px 2px rgb(28 30 29 / 12%),
+    0 12px 28px -12px rgb(28 30 29 / 28%);
 }
 
 /* ============================================================
