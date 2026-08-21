@@ -20,11 +20,11 @@ export function Masthead() {
         <a className="masthead__name" href="/">
           {profile.name}
         </a>
-        <nav className="masthead__nav" aria-label="ページ内の移動">
-          <a href="/#works">実績</a>
-          <a href="/#side">制作物</a>
-          <a href="/#about">私について</a>
-          <a href="/#contact">連絡先</a>
+        <nav className="masthead__nav" aria-label="ページ移動">
+          <a href="/">実績</a>
+          <a href="/other/">その他の制作物</a>
+          <a href="/about/">私について</a>
+          <a href="/contact/">連絡先</a>
         </nav>
       </div>
     </header>
